@@ -1,7 +1,7 @@
 import express from 'express';
+import dotenv from 'dotenv';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
-import dotenv from 'dotenv';
 
 import router from './routes/index.js';
 import { ENV } from './config/env.js';
@@ -18,12 +18,9 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
+// ✅ 모든 API 엔드포인트는 /api 로 시작
 app.use('/api', router);
 
-app.get('/', (req, res) => {
-  res.send('OK: Server running (ESM + config)');
-});
-
 app.listen(ENV.port, () => {
-  console.log(`Server running on port ${ENV.port}`);
+  console.log(`✅ Server running on port ${ENV.port}`);
 });

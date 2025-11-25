@@ -2,8 +2,8 @@ import { Router } from 'express';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  res.json({ message: 'API is live' });
+router.get('/health', (req, res) => {
+  res.json({ status: 'ok', message: 'API server running' });
 });
 
 export default router;
