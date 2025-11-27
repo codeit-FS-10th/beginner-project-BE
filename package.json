@@ -22,7 +22,8 @@
   },
   "homepage": "https://github.com/codeit-FS-10th/beginner-project-BE#readme",
   "dependencies": {
-    "@prisma/client": "^7.0.0",
+    "@prisma/client": "^6.19.0",
+    "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
@@ -33,6 +34,6 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.11",
-    "prisma": "^7.0.1"
+    "prisma": "^6.19.0"
   }
 }
