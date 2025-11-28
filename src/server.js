@@ -20,15 +20,14 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
-// 🔹 헬스 체크
+// 헬스 체크
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
-// ✅ 모든 API 엔드포인트는 /api 로 시작
 app.use('/api', router);
 
-// 🔹 404 + 에러 핸들러 (항상 마지막)
+// 404 + 에러 핸들러
 app.use(notFound);
 app.use(errorHandler);
 
