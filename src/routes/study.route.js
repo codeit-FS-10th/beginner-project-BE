@@ -1,6 +1,8 @@
 import { Router } from 'express';
 import * as studyController from '../controllers/study.controller.js';
 
+import habitRouter from "./habit.route.js";
+
 const router = Router();
 
 router.post('/', studyController.createStudy); // 스터디 생성
@@ -11,5 +13,7 @@ router.delete('/:studyId', studyController.deleteStudy); // 스터디 삭제
 
 // 비밀번호 검증 API 추가
 router.post('/:studyId/verify-password', studyController.verifyStudyPassword);
+
+router.use("/:studyId/habits", habitRouter);
 
 export default router;
