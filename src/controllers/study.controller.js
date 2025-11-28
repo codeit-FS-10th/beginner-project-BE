@@ -27,3 +27,37 @@ export async function getStudyDetail(req, res, next) {
     next(err);
   }
 }
+
+export async function verifyStudyPassword(req, res, next) {
+  try {
+    const { studyId } = req.params;
+    const { password } = req.body;
+
+    const result = await studyService.verifyStudyPassword(studyId, password);
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function updateStudy(req, res, next) {
+  try {
+    const { studyId } = req.params;
+    const payload = req.body;
+
+    const result = await studyService.updateStudy(studyId, payload);
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
+
+export async function deleteStudy(req, res, next) {
+  try {
+    const { studyId } = req.params;
+    const result = await studyService.deleteStudy(studyId);
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
