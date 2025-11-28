@@ -1,18 +1,12 @@
 import { Router } from "express";
-import {
-  getHabits, 
-  createHabit,
-  deleteHabit,
-  getTodayHabits,
-  toggleTodayHabit,
-} from "../controllers/habit.controller.js";
+import * as habitController from "../controllers/habit.controller.js";
 
 const router = Router({ mergeParams: true });
 
-router.get("/today", getTodayHabits);
-router.get("/", getHabits);
-router.post("/", createHabit);
-router.delete("/:habitId", deleteHabit);
-router.patch("/:habitId/today", toggleTodayHabit);
+router.get("/today", habitController.getTodayHabits);
+router.get("/", habitController.getHabits);
+router.post("/", habitController.createHabit);
+router.delete("/:habitId", habitController.deleteHabit);
+router.patch("/:habitId/today", habitController.toggleTodayHabit);
 
 export default router;
