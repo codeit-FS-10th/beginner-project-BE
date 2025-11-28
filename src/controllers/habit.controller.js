@@ -31,7 +31,7 @@ export const createHabit = async (req, res) => {
         NAME: name,
         MON: days.includes("MON"),
         TUE: days.includes("TUE"),
-        WEN: days.includes("WEN"),
+        WED: days.includes("WED"),
         THU: days.includes("THU"),
         FRI: days.includes("FRI"),
         SAT: days.includes("SAT"),
