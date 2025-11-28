@@ -27,7 +27,7 @@ export const createHabit = async (req, res) => {
     const habit = await prisma.hABIT.create({
       data: {
         STUDY_ID: studyId,
-        WEEK_NUM: getWeekNumber(now),
+        WEEK_NUM: 0, //getWeekNumber(now),
         NAME: name,
         MON: days.includes("MON"),
         TUE: days.includes("TUE"),
@@ -65,8 +65,8 @@ export const deleteHabit = async (req, res) => {
 export const getTodayHabits = async (req, res) => {
   const studyId = +req.params.studyId;
   const today = new Date();
-  const todayStart = startOfDay(today);
-  const tomorrowStart = startOfNextDay(today);
+//   const todayStart = startOfDay(today);
+//   const tomorrowStart = startOfNextDay(today);
 
   const weekMap = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
   const todayKey = weekMap[today.getDay()];
