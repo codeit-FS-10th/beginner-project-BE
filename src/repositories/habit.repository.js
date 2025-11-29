@@ -21,28 +21,31 @@ export const deleteHabit = (habitId) => {
 };
 
 // 오늘의 습관 조회
-export const findTodayHabits = (studyId, todayKey) => {
-  return prisma.hABIT.findMany({
-    where: { STUDY_ID: studyId, [todayKey]: true },
-    orderBy: { HABIT_ID: "asc" },
+export const findHabitById = (id) =>
+  prisma.hABIT.findUnique({
+    where: {HABIT_ID: id},
   });
-};
 
-// 오늘의 습관 조회
-export const findTodayRecords = (habitIds, todayStart, tomorrowStart) => {
-  return prisma.hABIT_RECORD.findMany({
-    where: {
-      HABIT_ID: { in: habitIds },
-      DATE: { gte: todayStart, lt: tomorrowStart },
-    },
+// 오늘 요일 업데이트
+export const updateToday = (habitId, todayKey, isDone) =>
+  prisma.hABIT.update({
+    where: {HABIT_ID: habitId},
+    data: {[todayKey]: isDone},
   });
-};
 
-// 체크 업서트
-export const upsertRecord = (habitId, today, isDone) => {
-  return prisma.hABIT_RECORD.upsert({
-    where: { HABIT_ID_DATE: { HABIT_ID: habitId, DATE: today } },
-    update: { IS_DONE: isDone },
-    create: { HABIT_ID: habitId, DATE: today, IS_DONE: isDone },
-  });
-};
+// 주차 초기화 + 요일 초기화
+export const resetWeek = (habitId, newWeek) =>
+  prisma.hABIT.update({
+    where: { HABIT_ID: habitId },
+    data: {
+      WEEK_NUM: newWeek,
+      MON: false,
+      TUE: false,
+      WED: false,
+      THU: false,
+      FRI: false,
+      SAT: false,
+      SUN: false,
+    }
+});
+

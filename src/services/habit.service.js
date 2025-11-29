@@ -23,54 +23,48 @@ export async function getHabits(studyId) {
 
 // 습관 생성
 export async function createHabit(studyId, payload) {
-  const { name, days = [] } = payload;
-  const now = new Date();
+    const { name, days = [] } = payload;
+    const now = new Date();
 
-  return habitRepo.createHabit({
+return habitRepo.createHabit({
     STUDY_ID: studyId,
     WEEK_NUM: getWeekNumber(now),
     NAME: name,
-    MON: days.includes("MON"),
-    TUE: days.includes("TUE"),
-    WED: days.includes("WED"),
-    THU: days.includes("THU"),
-    FRI: days.includes("FRI"),
-    SAT: days.includes("SAT"),
-    SUN: days.includes("SUN"),
-    REG_DATE: new Date(),
-    UPT_DATE: new Date(),
+    MON: false,
+    TUE: false,
+    WED: false,
+    THU: false,
+    FRI: false,
+    SAT: false,
+    SUN: false,
+    REG_DATE: now,
+    UPT_DATE: now,
   });
 }
 
 // 습관 삭제
 export async function deleteHabit(habitId) {
-  return habitRepo.deleteHabit(habitId);
+    return habitRepo.deleteHabit(habitId);
 }
 
-// 오늘의 습관 조회
+// 오늘의 습관 조회 일단 전체 조회로.
 export async function getTodayHabits(studyId) {
-  const today = new Date();
-  const todayStart = startOfDay(today);
-  const tomorrowStart = startOfNextDay(today);
-
-  const weekMap = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const todayKey = weekMap[today.getDay()];
-
-  const habits = await habitRepo.findTodayHabits(studyId, todayKey);
-  const habitIds = habits.map((h) => h.HABIT_ID);
-  const records = await habitRepo.findTodayRecords(habitIds, todayStart, tomorrowStart);
-
-  return habits.map((h) => {
-    const record = records.find((r) => r.HABIT_ID === h.HABIT_ID);
-    return {
-      ...h,
-      isDoneToday: record ? record.IS_DONE : false,
-    };
-  });
+    const today = new Date();
 }
 
 // 오늘 체크 갱신
 export async function toggleTodayHabit(habitId, isDone) {
-  const today = startOfDay(new Date());
-  return habitRepo.upsertRecord(habitId, today, isDone);
+    const now = new Date();
+    const weekNum = getWeekNumber(now);
+    const todayKey = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][now.getDay()];
+
+  const habit = await habitRepo.findHabitById(habitId);
+
+
+// 주차가 바뀌면 초기화 후 저장
+if ( habit.WEEK_NUM !== weekNum) {
+    await habitRepo.resetWeek(habitId, weekNum);
+}
+
+return habitRepo.updateToday(habitId, todayKey, isDone);
 }
