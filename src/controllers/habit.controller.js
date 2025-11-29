@@ -14,18 +14,15 @@ export async function getHabits(req, res, next) {
 }
 
 // 습관 생성
-export const createHabit = async (req, res) => {
-  const studyId = +req.params.studyId;
-//const { name, days = [] } = req.body;
-
+export async function createHabit(req, res, next) {
   try {
-    const habit = await habitService.createHabit(studyId, req.body);
-    res.status(201).json(habit);
+    const { studyId } = req.params;
+    const result = await habitService.createHabit(studyId, req.body);
+    return res.status(201).json(result);
   } catch (err) {
-    console.error("Create Habit Error:", err);
-    res.status(500).json({ message: "습관 생성 실패" });
+    next(err);
   }
-};
+}
 
 // 습관 삭제
 export const deleteHabit = async (req, res) => {

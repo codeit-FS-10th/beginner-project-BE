@@ -12,9 +12,16 @@ export function findHabitsByStudyAndWeek(studyId, weekNum) {
 }
 
 // 습관 생성
-export const createHabit = (data) => {
-  return prisma.hABIT.create({ data });
-};
+export function createHabit(studyId, weekNum, name) {
+  return prisma.hABIT.create({
+    data: {
+      STUDY_ID: Number(studyId),
+      WEEK_NUM: weekNum,
+      NAME: name,
+      UPT_DATE: new Date(),
+    },
+  });
+}
 
 // 습관 삭제
 export const deleteHabit = (habitId) => {

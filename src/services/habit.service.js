@@ -32,23 +32,24 @@ export async function getHabits(studyId) {
 
 // 습관 생성
 export async function createHabit(studyId, payload) {
-    const { name, days = [] } = payload;
-    const now = new Date();
+  const id = Number(studyId);
+  if (!id) {
+    const err = new Error("studyId가 유효하지 않습니다.");
+    err.status = 400;
+    throw err;
+  }
 
-return habitRepo.createHabit({
-    STUDY_ID: studyId,
-    WEEK_NUM: getWeekNumber(now),
-    NAME: name,
-    MON: false,
-    TUE: false,
-    WED: false,
-    THU: false,
-    FRI: false,
-    SAT: false,
-    SUN: false,
-    REG_DATE: now,
-    UPT_DATE: now,
-  });
+  const { name } = payload;
+  if (!name) {
+    const err = new Error("name은 필수입니다.");
+    err.status = 400;
+    throw err;
+  }
+
+  const weekNum = getWeekNumber(); // 이번 주차 구하기
+  const newHabit = await habitRepo.createHabit(id, weekNum, name);
+
+  return newHabit;
 }
 
 // 습관 삭제
