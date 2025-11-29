@@ -24,6 +24,7 @@ export async function getHabits(studyId) {
 // 습관 생성
 export async function createHabit(studyId, payload) {
   const { name, days = [] } = payload;
+  const now = new Date();
 
   return habitRepo.createHabit({
     STUDY_ID: studyId,

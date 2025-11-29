@@ -9,7 +9,7 @@ export const getHabits = async (req, res) => {
   try {
     const habits = await habitService.getHabits(studyId);
     res.json(habits);
-  } catch {
+  } catch (err) {
     res.status(500).json({ message: "습관 불러오기 실패" });
   }
 };
@@ -22,7 +22,8 @@ export const createHabit = async (req, res) => {
   try {
     const habit = await habitService.createHabit(studyId, req.body);
     res.status(201).json(habit);
-  } catch {
+  } catch (err) {
+    console.error("Create Habit Error:", err);
     res.status(500).json({ message: "습관 생성 실패" });
   }
 };
@@ -34,7 +35,7 @@ export const deleteHabit = async (req, res) => {
   try {
     await habitService.deleteHabit(habitId);
     res.json({ message: "습관 삭제" });
-  } catch {
+  } catch (err) {
     res.status(500).json({ message: "습관 삭제 실패" });
   }
 };
