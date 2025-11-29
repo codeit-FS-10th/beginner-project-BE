@@ -5,14 +5,11 @@ import prisma from "../config/prisma.client.js";
 // 전체 습관 목록 조회
 export const getHabits = async (req, res) => {
   const studyId = +req.params.studyId;
+
   try {
-    const habits = await prisma.hABIT.findMany({
-      where: { STUDY_ID: studyId },
-      orderBy: { HABIT_ID: "asc" },
-    });
+    const habits = await habitRepo.findHabitsByStudyId(studyId);
     res.json(habits);
-  } catch (err) {
-    console.error(err);
+  } catch {
     res.status(500).json({ message: "습관 불러오기 실패" });
   }
 };
@@ -22,27 +19,23 @@ export const createHabit = async (req, res) => {
   const studyId = +req.params.studyId;
   const { name, days = [] } = req.body;
 
-  const now = new Date();
   try {
-    const habit = await prisma.hABIT.create({
-      data: {
-        STUDY_ID: studyId,
-        WEEK_NUM: 0, //getWeekNumber(now),
-        NAME: name,
-        MON: days.includes("MON"),
-        TUE: days.includes("TUE"),
-        WED: days.includes("WED"),
-        THU: days.includes("THU"),
-        FRI: days.includes("FRI"),
-        SAT: days.includes("SAT"),
-        SUN: days.includes("SUN"),
-        REG_DATE: now,
-        UPT_DATE: now,
-      },
+    const habit = await habitRepo.createHabit({
+      STUDY_ID: studyId,
+      WEEK_NUM: 0,
+      NAME: name,
+      MON: days.includes("MON"),
+      TUE: days.includes("TUE"),
+      WED: days.includes("WED"),
+      THU: days.includes("THU"),
+      FRI: days.includes("FRI"),
+      SAT: days.includes("SAT"),
+      SUN: days.includes("SUN"),
+      REG_DATE: new Date(),
+      UPT_DATE: new Date(),
     });
     res.status(201).json(habit);
-  } catch (err) {
-    console.error(err);
+  } catch {
     res.status(500).json({ message: "습관 생성 실패" });
   }
 };
@@ -50,13 +43,11 @@ export const createHabit = async (req, res) => {
 // 습관 삭제
 export const deleteHabit = async (req, res) => {
   const habitId = +req.params.habitId;
+
   try {
-    await prisma.hABIT.delete({
-      where: { HABIT_ID: habitId },
-    });
+    await habitRepo.deleteHabit(habitId);
     res.json({ message: "습관 삭제" });
-  } catch (err) {
-    console.error(err);
+  } catch {
     res.status(500).json({ message: "습관 삭제 실패" });
   }
 };
