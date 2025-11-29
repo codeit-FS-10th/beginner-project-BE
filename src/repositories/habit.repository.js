@@ -83,32 +83,12 @@ export async function getTodayHabits(studyId) {
   };
 }
 
-
-// export const findHabitById = (id) =>
-//   prisma.hABIT.findUnique({
-//     where: {HABIT_ID: id},
-//   });
-
-// // 오늘 요일 업데이트
-// export const updateToday = (habitId, todayKey, isDone) =>
-//   prisma.hABIT.update({
-//     where: {HABIT_ID: habitId},
-//     data: {[todayKey]: isDone},
-//   });
-
-// // 주차 초기화 + 요일 초기화
-// export const resetWeek = (habitId, newWeek) =>
-//   prisma.hABIT.update({
-//     where: { HABIT_ID: habitId },
-//     data: {
-//       WEEK_NUM: newWeek,
-//       MON: false,
-//       TUE: false,
-//       WED: false,
-//       THU: false,
-//       FRI: false,
-//       SAT: false,
-//       SUN: false,
-//     }
-// });
-
+export function updateToday(habitId, todayKey, isDone) {
+  return prisma.hABIT.update({
+    where: { HABIT_ID: Number(habitId) },
+    data: {
+      [todayKey]: isDone, //오늘 요일만 업데이트
+      UPT_DATE: new Date(),
+    },
+  });
+}

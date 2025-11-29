@@ -60,16 +60,15 @@ export const getTodayHabits = async (req, res) => {
   }
 };
 
-// 오늘 체크 갱신
-export const toggleTodayHabit = async (req, res) => {
-  const habitId = +req.params.habitId;
-  const { isDone } = req.body;
-
+// 오늘의 습관 체크/해제
+export async function toggleTodayHabit(req, res, next) {
   try {
-    const record = await habitService.toggleTodayHabit(habitId, isDone);
-    res.json(record);
+    const { studyId, habitId } = req.params;
+    const { isDone } = req.body;
+
+    const result = await habitService.toggleTodayHabit(studyId, habitId, isDone);
+    return res.status(200).json(result);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "갱신 실패" });
+    next(err);
   }
-};
+}
