@@ -17,7 +17,7 @@ export const getHabits = async (req, res) => {
 // 습관 생성
 export const createHabit = async (req, res) => {
   const studyId = +req.params.studyId;
-  const { name, days = [] } = req.body;
+//const { name, days = [] } = req.body;
 
   try {
     const habit = await habitService.createHabit(studyId, req.body);
@@ -42,33 +42,10 @@ export const deleteHabit = async (req, res) => {
 // 오늘의 습관 조회
 export const getTodayHabits = async (req, res) => {
   const studyId = +req.params.studyId;
-  const today = new Date();
-//   const todayStart = startOfDay(today);
-//   const tomorrowStart = startOfNextDay(today);
 
-  const weekMap = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
-  const todayKey = weekMap[today.getDay()];
-
-  try {
-    const habits = await prisma.hABIT.findMany({
-      where: { STUDY_ID: studyId, [todayKey]: true },
-      orderBy: { HABIT_ID: "asc" },
-    });
-
-    const habitIds = habits.map((h) => h.HABIT_ID);
-    const records = await prisma.hABIT_RECORD.findMany({
-      where: {
-        HABIT_ID: { in: habitIds },
-        DATE: { gte: todayStart, lt: tomorrowStart },
-      },
-    });
-
-    const result = habits.map((h) => {
-      const record = records.find((r) => r.HABIT_ID === h.HABIT_ID);
-      return { ...h, isDoneToday: record ? record.IS_DONE : false };
-    });
-
-    res.json(result);
+   try {
+    const habits = await habitService.getTodayHabits(studyId);
+    res.json(habits);
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: "오늘의 습관 불러오기 실패" });
@@ -79,20 +56,9 @@ export const getTodayHabits = async (req, res) => {
 export const toggleTodayHabit = async (req, res) => {
   const habitId = +req.params.habitId;
   const { isDone } = req.body;
-  const today = startOfDay(new Date());
 
   try {
-    const record = await prisma.hABIT_RECORD.upsert({
-      where: {
-        HABIT_ID_DATE: {
-          HABIT_ID: habitId,
-          DATE: today,
-        },
-      },
-      update: { IS_DONE: isDone },
-      create: { HABIT_ID: habitId, DATE: today, IS_DONE: isDone },
-    });
-
+    const record = await habitService.toggleTodayHabit(habitId, isDone);
     res.json(record);
   } catch (err) {
     console.error(err);
