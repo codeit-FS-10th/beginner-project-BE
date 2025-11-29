@@ -51,6 +51,41 @@ export async function createHabit(studyId, payload) {
 
   return newHabit;
 }
+// 습관이름변경
+export async function updateHabit(studyId, habitId, payload) {
+  const id = Number(studyId);
+  const hid = Number(habitId);
+  if (!id || !hid) {
+    const err = new Error("유효한 studyId, habitId가 필요합니다.");
+    err.status = 400;
+    throw err;
+  }
+
+  const { name: newName } = payload;
+  if (!newName) {
+    const err = new Error("name은 필수입니다.");
+    err.status = 400;
+    throw err;
+  }
+
+  // 기존 습관 찾기
+  const habit = await habitRepo.findHabitById(hid);
+  if (!habit) {
+    const err = new Error("해당 습관을 찾을 수 없습니다.");
+    err.status = 404;
+    throw err;
+  }
+
+  // 같은 이름이면 그냥 성공 처리
+  if (habit.NAME === newName) {
+    return { message: "변경할 내용 없음", updated: false };
+  }
+
+  // STUDY_ID + 기존 NAME 로 전체 업데이트
+  const result = await habitRepo.updateHabitName(id, habit.NAME, newName);
+  return { updated: result.count, newName };
+}
+
 
 // 습관 삭제
 export async function deleteHabit(habitId) {

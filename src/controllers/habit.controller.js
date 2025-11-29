@@ -23,6 +23,16 @@ export async function createHabit(req, res, next) {
     next(err);
   }
 }
+// 습관 이름 변경
+export async function updateHabit(req, res, next) {
+  try {
+    const { studyId, habitId } = req.params;
+    const result = await habitService.updateHabit(studyId, habitId, req.body);
+    return res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+}
 
 // 습관 삭제
 export const deleteHabit = async (req, res) => {

@@ -6,6 +6,7 @@ const router = Router({ mergeParams: true });
 router.get("/", habitController.getHabits);
 router.get("/today", habitController.getTodayHabits);
 router.post("/", habitController.createHabit);
+router.patch("/:habitId", habitController.updateHabit); // 이름 수정
 router.delete("/:habitId", habitController.deleteHabit);
 router.patch("/:habitId/today", habitController.toggleTodayHabit);
 
