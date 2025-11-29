@@ -1,4 +1,4 @@
-import prisma from "../config/prisma.client.js";
+import * as habitService from "../services/habit.service.js";
 
 // ========== 컨트롤러 구현 ==========
 
@@ -7,7 +7,7 @@ export const getHabits = async (req, res) => {
   const studyId = +req.params.studyId;
 
   try {
-    const habits = await habitRepo.findHabitsByStudyId(studyId);
+    const habits = await habitService.getHabits(studyId);
     res.json(habits);
   } catch {
     res.status(500).json({ message: "습관 불러오기 실패" });
@@ -20,20 +20,7 @@ export const createHabit = async (req, res) => {
   const { name, days = [] } = req.body;
 
   try {
-    const habit = await habitRepo.createHabit({
-      STUDY_ID: studyId,
-      WEEK_NUM: 0,
-      NAME: name,
-      MON: days.includes("MON"),
-      TUE: days.includes("TUE"),
-      WED: days.includes("WED"),
-      THU: days.includes("THU"),
-      FRI: days.includes("FRI"),
-      SAT: days.includes("SAT"),
-      SUN: days.includes("SUN"),
-      REG_DATE: new Date(),
-      UPT_DATE: new Date(),
-    });
+    const habit = await habitService.createHabit(studyId, req.body);
     res.status(201).json(habit);
   } catch {
     res.status(500).json({ message: "습관 생성 실패" });
@@ -45,7 +32,7 @@ export const deleteHabit = async (req, res) => {
   const habitId = +req.params.habitId;
 
   try {
-    await habitRepo.deleteHabit(habitId);
+    await habitService.deleteHabit(habitId);
     res.json({ message: "습관 삭제" });
   } catch {
     res.status(500).json({ message: "습관 삭제 실패" });
