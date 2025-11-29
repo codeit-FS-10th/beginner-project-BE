@@ -3,16 +3,15 @@ import * as habitService from "../services/habit.service.js";
 // ========== 컨트롤러 구현 ==========
 
 // 전체 습관 목록 조회
-export const getHabits = async (req, res) => {
-  const studyId = +req.params.studyId;
-
+export async function getHabits(req, res, next) {
   try {
-    const habits = await habitService.getHabits(studyId);
-    res.json(habits);
+    const { studyId } = req.params;
+    const result = await habitService.getHabits(studyId);
+    return res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ message: "습관 불러오기 실패" });
+    next(err);
   }
-};
+}
 
 // 습관 생성
 export const createHabit = async (req, res) => {

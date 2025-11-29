@@ -1,12 +1,15 @@
 import prisma from "../config/prisma.client.js";
 
 // 전체 습관 목록 조회
-export const findHabitsByStudyId = (studyId) => {
+export function findHabitsByStudyAndWeek(studyId, weekNum) {
   return prisma.hABIT.findMany({
-    where: { STUDY_ID: studyId },
+    where: {
+      STUDY_ID: Number(studyId),
+      WEEK_NUM: weekNum,
+    },
     orderBy: { HABIT_ID: "asc" },
   });
-};
+}
 
 // 습관 생성
 export const createHabit = (data) => {
