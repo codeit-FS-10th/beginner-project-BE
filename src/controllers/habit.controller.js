@@ -2,7 +2,7 @@ import * as habitService from "../services/habit.service.js";
 
 // ========== 컨트롤러 구현 ==========
 
-// 전체 습관 목록 조회
+// 전체 습관 목록 조회 , 오늘의 목록 조회
 export async function getHabits(req, res, next) {
   try {
     const { studyId } = req.params;

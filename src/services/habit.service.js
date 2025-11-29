@@ -122,15 +122,35 @@ export async function deleteHabit(studyId, habitId) {
 }
 
 
-// // 습관 삭제
-// export async function deleteHabit(habitId) {
-//     return habitRepo.deleteHabit(habitId);
-// }
 
-// // 오늘의 습관 조회 일단 전체 조회로.
-// export async function getTodayHabits(studyId) {
-//     const today = new Date();
-// }
+export async function getTodayHabits(studyId) {
+  const id = Number(studyId);
+  if (!id) {
+    const err = new Error("studyId가 유효하지 않습니다.");
+    err.status = 400;
+    throw err;
+  }
+
+  const now = new Date();
+  const dow = now.getDay();
+  const todayField = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][dow];
+
+  const weekNum = getWeekNumber();
+  const habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
+
+  const result = habits.map(h => ({
+    HABIT_ID: h.HABIT_ID,
+    NAME: h.NAME,
+    isDone: h[todayField]
+  }));
+
+  return {
+    serverTime: now,
+    weekNum,
+    day: todayField,
+    habits: result
+  };
+}
 
 // // 오늘 체크 갱신
 // export async function toggleTodayHabit(habitId, isDone) {
