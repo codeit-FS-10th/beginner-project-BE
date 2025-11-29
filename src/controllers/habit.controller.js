@@ -34,17 +34,18 @@ export async function updateHabit(req, res, next) {
   }
 }
 
-// 습관 삭제
-export const deleteHabit = async (req, res) => {
-  const habitId = +req.params.habitId;
 
+// 습관 삭제
+export async function deleteHabit(req, res, next) {
   try {
-    await habitService.deleteHabit(habitId);
-    res.json({ message: "습관 삭제" });
+    const { studyId, habitId } = req.params;
+    const result = await habitService.deleteHabit(studyId, habitId);
+    return res.status(200).json(result);
   } catch (err) {
-    res.status(500).json({ message: "습관 삭제 실패" });
+    next(err);
   }
-};
+}
+
 
 // 오늘의 습관 조회
 export const getTodayHabits = async (req, res) => {

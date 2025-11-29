@@ -43,12 +43,13 @@ export function findHabitById(habitId) {
   }); //어떤습관?
 }
 
-// 습관 삭제
-export const deleteHabit = (habitId) => {
+export function deleteHabitById(habitId) {
   return prisma.hABIT.delete({
-    where: { HABIT_ID: habitId },
+    where: {
+      HABIT_ID: Number(habitId),
+    },
   });
-};
+}
 
 // // 오늘의 습관 조회
 // export const findHabitById = (id) =>

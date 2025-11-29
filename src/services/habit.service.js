@@ -17,6 +17,7 @@ function getWeekNumber(date = new Date()) {
   return Math.floor(diff / 864e5 / 7) + 1;
 }
 
+
 // 전체 목록 조회
 export async function getHabits(studyId) {
   const id = Number(studyId);
@@ -29,6 +30,7 @@ export async function getHabits(studyId) {
   const habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum); //studyid, 주차
   return habits;
 }
+
 
 // 습관 생성
 export async function createHabit(studyId, payload) {
@@ -51,6 +53,8 @@ export async function createHabit(studyId, payload) {
 
   return newHabit;
 }
+
+
 // 습관이름변경
 export async function updateHabit(studyId, habitId, payload) {
   const id = Number(studyId);
@@ -88,28 +92,59 @@ export async function updateHabit(studyId, habitId, payload) {
 
 
 // 습관 삭제
-export async function deleteHabit(habitId) {
-    return habitRepo.deleteHabit(habitId);
+export async function deleteHabit(studyId, habitId) {
+  const id = Number(studyId);
+  const hid = Number(habitId);
+
+  if (!id || !hid) {
+    const err = new Error("유효한 studyId, habitId가 필요합니다.");
+    err.status = 400;
+    throw err;
+  }
+
+  const habit = await habitRepo.findHabitById(hid);
+  if (!habit) {
+    const err = new Error("해당 습관을 찾을 수 없습니다.");
+    err.status = 404;
+    throw err;
+  }
+
+  // 스터디 ID가 일치하는지
+  if (habit.STUDY_ID !== id) {
+    const err = new Error("해당 스터디에 속하지 않은 습관입니다.");
+    err.status = 403;
+    throw err;
+  }
+
+  await habitRepo.deleteHabitById(hid);
+
+  return { success: true };
 }
 
-// 오늘의 습관 조회 일단 전체 조회로.
-export async function getTodayHabits(studyId) {
-    const today = new Date();
-}
 
-// 오늘 체크 갱신
-export async function toggleTodayHabit(habitId, isDone) {
-    const now = new Date();
-    const weekNum = getWeekNumber(now);
-    const todayKey = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][now.getDay()];
+// // 습관 삭제
+// export async function deleteHabit(habitId) {
+//     return habitRepo.deleteHabit(habitId);
+// }
 
-  const habit = await habitRepo.findHabitById(habitId);
+// // 오늘의 습관 조회 일단 전체 조회로.
+// export async function getTodayHabits(studyId) {
+//     const today = new Date();
+// }
+
+// // 오늘 체크 갱신
+// export async function toggleTodayHabit(habitId, isDone) {
+//     const now = new Date();
+//     const weekNum = getWeekNumber(now);
+//     const todayKey = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][now.getDay()];
+
+//   const habit = await habitRepo.findHabitById(habitId);
 
 
-// 주차가 바뀌면 초기화 후 저장
-if ( habit.WEEK_NUM !== weekNum) {
-    await habitRepo.resetWeek(habitId, weekNum);
-}
+// // 주차가 바뀌면 초기화 후 저장
+// if ( habit.WEEK_NUM !== weekNum) {
+//     await habitRepo.resetWeek(habitId, weekNum);
+// }
 
-return habitRepo.updateToday(habitId, todayKey, isDone);
-}
+// return habitRepo.updateToday(habitId, todayKey, isDone);
+// }
