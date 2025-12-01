@@ -9,6 +9,7 @@ import { corsMiddleware } from './config/cors.js';
 import { securityMiddleware } from './config/security.js';
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
+import { swaggerUi, swaggerSpec } from './config/swagger.js';
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', router);
 
 // 404 + 에러 핸들러
