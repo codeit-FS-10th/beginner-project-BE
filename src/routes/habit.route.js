@@ -1,14 +1,14 @@
-import { Router } from "express";
+import { Router } from 'express';
 import * as habitController from '../controllers/habit.controller.js';
 
 const router = Router({ mergeParams: true });
 
-router.get("/", habitController.getHabits);
-router.get("/today", habitController.getTodayHabits);
-router.post("/", habitController.createHabit);
-router.patch("/:habitId", habitController.updateHabit); // 이름 수정
-router.delete("/:habitId", habitController.deleteHabit);
-router.patch("/:habitId/today", habitController.toggleTodayHabit);
+router.get('/', habitController.getHabits);
+router.get('/today', habitController.getTodayHabits);
+router.post('/', habitController.createHabit);
+router.patch('/:habitId', habitController.updateHabit);
+router.delete('/:habitId', habitController.deleteHabit);
+router.patch('/:habitId/today', habitController.toggleTodayHabit);
 
 /**
  * @openapi
@@ -73,11 +73,5 @@ router.patch("/:habitId/today", habitController.toggleTodayHabit);
  *       200:
  *         description: 오늘의 습관 상태 변경 성공
  */
-
-router.get('/today', getTodayHabits);
-router.get('/', getHabits);
-router.post('/', createHabit);
-router.delete('/:habitId', deleteHabit);
-router.patch('/:habitId/today', toggleTodayHabit);
 
 export default router;
