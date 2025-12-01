@@ -14,14 +14,14 @@ export function getStudy() {
 
 // 스터디 단건 조회
 export async function findStudyById(studyId) {
-  return prisma.STUDY.findUnique({
+  return prisma.sTUDY.findUnique({
     where: { STUDY_ID: studyId },
   });
 }
 
 // 스터디 수정
 export async function updateStudy(studyId, data) {
-  return prisma.STUDY.update({
+  return prisma.sTUDY.update({
     where: { STUDY_ID: Number(studyId) },
     data,
   });
@@ -29,7 +29,7 @@ export async function updateStudy(studyId, data) {
 
 // 스터디 삭제
 export async function deleteStudy(studyId) {
-  return prisma.STUDY.delete({
+  return prisma.sTUDY.delete({
     where: { STUDY_ID: Number(studyId) },
   });
 }
