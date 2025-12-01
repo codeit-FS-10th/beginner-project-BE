@@ -1,58 +1,14 @@
-import { Router } from 'express';
-import {
-  getHabits,
-  createHabit,
-  deleteHabit,
-  getTodayHabits,
-  toggleTodayHabit,
-} from '../controllers/habit.controller.js';
+import { Router } from "express";
+import * as habitController from '../controllers/habit.controller.js';
 
 const router = Router({ mergeParams: true });
 
-/**
- * @openapi
- * /api/studies/{studyId}/habits:
- *   get:
- *     summary: 특정 스터디의 주간 습관 리스트 조회
- *     tags:
- *       - Habit
- *     parameters:
- *       - in: path
- *         name: studyId
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: 습관 리스트 조회 성공
- *
- *   post:
- *     summary: 특정 스터디에 새로운 습관 생성
- *     tags:
- *       - Habit
- *     parameters:
- *       - in: path
- *         name: studyId
- *         required: true
- *         schema:
- *           type: integer
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 example: 하루 30분 코딩
- *               weekNum:
- *                 type: integer
- *                 example: 48
- *     responses:
- *       201:
- *         description: 습관 생성 성공
- */
+router.get("/", habitController.getHabits);
+router.get("/today", habitController.getTodayHabits);
+router.post("/", habitController.createHabit);
+router.patch("/:habitId", habitController.updateHabit); // 이름 수정
+router.delete("/:habitId", habitController.deleteHabit);
+router.patch("/:habitId/today", habitController.toggleTodayHabit);
 
 /**
  * @openapi
