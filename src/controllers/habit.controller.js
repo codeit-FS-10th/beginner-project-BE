@@ -49,7 +49,7 @@ export async function deleteHabit(req, res, next) {
 export const getTodayHabits = async (req, res) => {
   const studyId = +req.params.studyId;
 
-  try {
+   try {
     const habits = await habitService.getTodayHabits(studyId);
     res.json(habits);
   } catch (err) {
@@ -65,9 +65,9 @@ export async function toggleTodayHabit(req, res, next) {
     const { isDone } = req.body;
 
     const result = await habitService.toggleTodayHabit(
-      studyId,
-      habitId,
-      isDone
+        studyId,
+        habitId,
+        isDone
     );
     return res.status(200).json(result);
   } catch (err) {
