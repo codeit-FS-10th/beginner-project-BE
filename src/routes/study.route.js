@@ -15,6 +15,49 @@ const router = Router();
  *     responses:
  *       200:
  *         description: 스터디 목록을 성공적으로 가져옴
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   STUDY_ID:
+ *                     type: integer
+ *                   NAME:
+ *                     type: string
+ *                   NICKNAME:
+ *                     type: string
+ *                   INTRO:
+ *                     type: string
+ *                     nullable: true
+ *                   IMAGE:
+ *                     type: string
+ *                     nullable: true
+ *                   REG_DATE:
+ *                     type: string
+ *                     format: date-time
+ *                   UPT_DATE:
+ *                     type: string
+ *                     format: date-time
+ *                     nullable: true
+ *             example:
+ *               - STUDY_ID: 1
+ *                 NAME: "오늘의 습관 스터디"
+ *                 NICKNAME: "킴명"
+ *                 INTRO: "열심히 해보자"
+ *                 IMAGE: "https://example.com/image1.png"
+ *                 REG_DATE: "2025-12-01T10:00:00.000Z"
+ *                 UPT_DATE: "2025-12-01T10:00:00.000Z"
+ *               - STUDY_ID: 2
+ *                 NAME: "코딩 스터디"
+ *                 NICKNAME: "홍길동"
+ *                 INTRO: "하루 1커밋"
+ *                 IMAGE: null
+ *                 REG_DATE: "2025-12-01T11:00:00.000Z"
+ *                 UPT_DATE: null
+ *       500:
+ *         description: 서버 에러
  *
  *   post:
  *     summary: 스터디 생성
@@ -26,6 +69,10 @@ const router = Router();
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - name
+ *               - nickname
+ *               - password
  *             properties:
  *               name:
  *                 type: string
@@ -42,9 +89,46 @@ const router = Router();
  *               image:
  *                 type: string
  *                 nullable: true
+ *                 example: "https://example.com/image.png"
  *     responses:
  *       201:
  *         description: 생성된 스터디 정보
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 STUDY_ID:
+ *                   type: integer
+ *                 NAME:
+ *                   type: string
+ *                 NICKNAME:
+ *                   type: string
+ *                 INTRO:
+ *                   type: string
+ *                   nullable: true
+ *                 IMAGE:
+ *                   type: string
+ *                   nullable: true
+ *                 REG_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                 UPT_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                   nullable: true
+ *             example:
+ *               STUDY_ID: 1
+ *               NAME: "오늘의 습관 스터디"
+ *               NICKNAME: "킴명"
+ *               INTRO: "열심히 해보자"
+ *               IMAGE: "https://example.com/image.png"
+ *               REG_DATE: "2025-12-01T10:00:00.000Z"
+ *               UPT_DATE: "2025-12-01T10:00:00.000Z"
+ *       400:
+ *         description: 잘못된 요청 (name, nickname, password 누락 등)
+ *       500:
+ *         description: 서버 에러
  */
 
 /**
@@ -60,9 +144,48 @@ const router = Router();
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 스터디 ID
  *     responses:
  *       200:
  *         description: 스터디 상세 정보
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 STUDY_ID:
+ *                   type: integer
+ *                 NAME:
+ *                   type: string
+ *                 NICKNAME:
+ *                   type: string
+ *                 INTRO:
+ *                   type: string
+ *                   nullable: true
+ *                 IMAGE:
+ *                   type: string
+ *                   nullable: true
+ *                 REG_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                 UPT_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                   nullable: true
+ *             example:
+ *               STUDY_ID: 1
+ *               NAME: "오늘의 습관 스터디"
+ *               NICKNAME: "킴명"
+ *               INTRO: "열심히 해보자"
+ *               IMAGE: "https://example.com/image.png"
+ *               REG_DATE: "2025-12-01T10:00:00.000Z"
+ *               UPT_DATE: "2025-12-02T09:30:00.000Z"
+ *       400:
+ *         description: studyId가 유효하지 않음
+ *       404:
+ *         description: 스터디를 찾을 수 없음
+ *       500:
+ *         description: 서버 에러
  *
  *   patch:
  *     summary: 스터디 정보 수정
@@ -74,6 +197,7 @@ const router = Router();
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 스터디 ID
  *     requestBody:
  *       required: false
  *       content:
@@ -94,6 +218,44 @@ const router = Router();
  *     responses:
  *       200:
  *         description: 수정된 스터디 정보
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 STUDY_ID:
+ *                   type: integer
+ *                 NAME:
+ *                   type: string
+ *                 NICKNAME:
+ *                   type: string
+ *                 INTRO:
+ *                   type: string
+ *                   nullable: true
+ *                 IMAGE:
+ *                   type: string
+ *                   nullable: true
+ *                 REG_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                 UPT_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                   nullable: true
+ *             example:
+ *               STUDY_ID: 1
+ *               NAME: "오늘의 습관 스터디(수정)"
+ *               NICKNAME: "킴명"
+ *               INTRO: "열심히 해보자🔥"
+ *               IMAGE: "https://example.com/image.png"
+ *               REG_DATE: "2025-12-01T10:00:00.000Z"
+ *               UPT_DATE: "2025-12-02T10:00:00.000Z"
+ *       400:
+ *         description: 유효한 studyId가 아니거나 수정할 값이 없음
+ *       404:
+ *         description: 스터디를 찾을 수 없음
+ *       500:
+ *         description: 서버 에러
  *
  *   delete:
  *     summary: 스터디 삭제
@@ -105,9 +267,25 @@ const router = Router();
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 스터디 ID
  *     responses:
- *       204:
+ *       200:
  *         description: 스터디 삭제 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *             example:
+ *               success: true
+ *       400:
+ *         description: 유효하지 않은 studyId
+ *       404:
+ *         description: 스터디를 찾을 수 없음
+ *       500:
+ *         description: 서버 에러
  */
 
 /**
@@ -123,19 +301,39 @@ const router = Router();
  *         required: true
  *         schema:
  *           type: integer
+ *         description: 스터디 ID
  *     requestBody:
  *       required: true
  *       content:
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - password
  *             properties:
  *               password:
  *                 type: string
  *                 example: "1234"
  *     responses:
  *       200:
- *         description: 비밀번호 검증 결과
+ *         description: 비밀번호 검증 성공
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 verified:
+ *                   type: boolean
+ *             example:
+ *               verified: true
+ *       400:
+ *         description: 잘못된 요청 (password 누락 또는 studyId가 숫자가 아님)
+ *       401:
+ *         description: 비밀번호 불일치
+ *       404:
+ *         description: 스터디를 찾을 수 없음
+ *       500:
+ *         description: 서버 에러
  */
 
 router.post('/', studyController.createStudy); // 스터디 생성

@@ -21,7 +21,6 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
-// 헬스 체크
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -29,7 +28,6 @@ app.get('/api/health', (req, res) => {
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', router);
 
-// 404 + 에러 핸들러
 app.use(notFound);
 app.use(errorHandler);
 
