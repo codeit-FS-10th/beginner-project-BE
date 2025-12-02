@@ -8,7 +8,7 @@ router.get('/health', (req, res) => {
   res.json({ status: 'ok', message: 'API server running' });
 });
 
-router.use('/studies', studyRouter);
 router.use('/studies', pointRouter);
+router.use('/studies', studyRouter);
 
 export default router;
