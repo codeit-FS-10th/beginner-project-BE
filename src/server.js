@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express from 'express';
 import dotenv from 'dotenv';
 import morgan from 'morgan';
@@ -20,6 +21,7 @@ app.use(securityMiddleware);
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors());
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
