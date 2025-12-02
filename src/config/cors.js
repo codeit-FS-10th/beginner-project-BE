@@ -1,7 +1,8 @@
 import cors from 'cors';
 
 const allowedOrigins = [
-  'http://localhost:5174', // Frontend dev 서버
+  'http://localhost:5173', // Backend Leader 김명환 dev 서버 frontend 접근
+  'http://localhost:5174', // Frontend Leader 안정준 dev 서버 frontend 접근
   'http://localhost:3000', // Backend dev 서버
 ];
 
