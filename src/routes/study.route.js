@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import * as studyController from '../controllers/study.controller.js';
 import habitRouter from './habit.route.js';
+import focusRouter from './focus.route.js';
 
 const router = Router();
 
@@ -346,5 +347,8 @@ router.post('/:studyId/verify-password', studyController.verifyStudyPassword);
 
 // 오늘의 습관 하위 라우트
 router.use('/:studyId/habits', habitRouter);
+
+// 오늘의 집중 하위 라우트
+router.use('/:studyId/focus', focusRouter);
 
 export default router;
