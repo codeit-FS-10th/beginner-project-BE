@@ -1,7 +1,7 @@
 import cors from 'cors';
 
 const allowedOrigins = [
-  'http://localhost:5173', // Frontend dev 서버
+  'http://localhost:5174', // Frontend dev 서버
   'http://localhost:3000', // Backend dev 서버
 ];
 
