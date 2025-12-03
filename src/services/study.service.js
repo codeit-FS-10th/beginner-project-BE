@@ -33,10 +33,24 @@ export async function createStudy(payload) {
 
 //============================== getStudy ==============================//
 
-export async function getStudy() {
-  const studies = await studyRepo.getStudy();
+export async function getStudy({ page, limit }) {
+  const take = limit;
+  const skip = (page - 1) * limit;
 
-  return studies.map(({ PASSWORD, ...rest }) => rest);
+  const [studies, total] = await Promise.all([
+    studyRepo.getStudy({ skip, take }),
+    studyRepo.countStudies(),
+  ]);
+
+  const safeStudies = studies.map(({ PASSWORD, ...rest }) => rest);
+
+  return {
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit),
+    items: safeStudies,
+  };
 }
 
 //============================== getStudyDetail ==============================//
