@@ -6,10 +6,17 @@ export function createStudy(data) {
   });
 }
 
-export function getStudy() {
+export function getStudy({ skip, take } = {}) {
   return prisma.sTUDY.findMany({
+    skip,
+    take,
     orderBy: { REG_DATE: 'desc' },
   });
+}
+
+// 전체 개수 카운트용
+export function countStudies() {
+  return prisma.sTUDY.count();
 }
 
 // 스터디 단건 조회

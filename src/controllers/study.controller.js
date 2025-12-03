@@ -11,7 +11,14 @@ export async function createStudy(req, res, next) {
 
 export async function getStudy(req, res, next) {
   try {
-    const result = await studyService.getStudy();
+    const { page = '1', limit = '10' } = req.query;
+
+    const pagination = {
+      page: Number(page) || 1,
+      limit: Number(limit) || 10,
+    };
+
+    const result = await studyService.getStudy(pagination);
     return res.status(200).json(result);
   } catch (err) {
     next(err);
