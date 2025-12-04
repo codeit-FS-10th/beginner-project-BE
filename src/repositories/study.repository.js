@@ -7,6 +7,25 @@ export function createStudy(data) {
 }
 
 export function getStudy({ skip, take } = {}) {
+  let orderBy;
+
+  switch (sort) {
+    case "newest":
+      orderBy = { createdAt: "desc" }; 
+      break;
+    case "oldest":
+      orderBy = { createdAt: "asc" }; 
+      break;
+    case "point_desc":
+      orderBy = { totalPoint: "desc" }; 
+      break;
+    case "point_asc":
+      orderBy = { totalPoint: "asc" }; 
+      break;
+    default:
+      orderBy = { createdAt: "desc" }; 
+  }
+
   return prisma.sTUDY.findMany({
     skip,
     take,
