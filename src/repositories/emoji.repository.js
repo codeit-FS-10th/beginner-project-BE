@@ -1,35 +1,33 @@
 import prisma from '../config/prisma.client.js';
 
 // 1) 특정 스터디 + 특정 이모지 한 줄 찾기
-export async function findEmojiByStudyAndUnicode(studyId, unicode) {
+export async function findEmojiByStudyAndCode(studyId, code) {
   return prisma.eMOJI.findFirst({
     where: {
       STUDY_ID: studyId,
-      UNICODE: unicode,
+      CODE: code,
     },
   });
 }
 
 // 2) 새 이모지 row 생성
-export async function createEmoji(studyId, unicode) {
+export async function createEmoji(studyId, code) {
   return prisma.eMOJI.create({
     data: {
       STUDY_ID: studyId,
-      UNICODE: unicode,
-      // COUNTING 은 기본값 0 이면 생략 가능
+      CODE: code,
+      COUNTING: 1,
     },
   });
 }
 
 // 3) COUNTING + 1
 //   PK 가 UNICODE 라고 가정 (schema.prisma 기준)
-export async function increaseEmojiCount(unicode) {
+export async function increaseEmojiCount(code) {
   return prisma.eMOJI.update({
-    where: { UNICODE: unicode },
+    where: { CODE: code },
     data: {
-      COUNTING: {
-        increment: 1,
-      },
+      COUNTING: { increment: 1 },
     },
   });
 }
