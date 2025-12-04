@@ -33,12 +33,12 @@ export async function createStudy(payload) {
 
 //============================== getStudy ==============================//
 
-export async function getStudy({ page, limit }) {
+export async function getStudy({ page, limit , sort = "newest "}) {
   const take = limit;
   const skip = (page - 1) * limit;
 
   const [studies, total] = await Promise.all([
-    studyRepo.getStudy({ skip, take }),
+    studyRepo.getStudy({ skip, take , sort}),
     studyRepo.countStudies(),
   ]);
 
