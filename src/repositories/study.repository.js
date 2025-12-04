@@ -6,7 +6,7 @@ export function createStudy(data) {
   });
 }
 
-export function getStudy({ skip, take } = {}) {
+export async function getStudy({ skip, take, sort = "newest" }) {
   let orderBy;
 
   switch (sort) {
