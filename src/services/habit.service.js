@@ -1,42 +1,36 @@
 import * as habitRepo from "../repositories/habit.repository.js";
+import dayjs from "dayjs";
+import utc from "dayjs/plugin/utc.js";
+import timezone from "dayjs/plugin/timezone.js";
 
-// 날짜 관련 유틸
-function getWeekNumber(date = new Date()) {
-  const y = date.getFullYear();
-  const m = date.getMonth();
-  const d = date.getDate();
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.tz.setDefault("Asia/Seoul");
 
-  const today = new Date(y, m, d);
-  const dow = today.getDay(); // 일 0 ~ 토 6
-  const diffToMon = (dow + 6) % 7; // 월요일과 비교
-
-  const monday = new Date(y, m, d - diffToMon);
-  const firstDay = new Date(y, 0, 1);
-
-  const diff = monday - firstDay;
-  return Math.floor(diff / 864e5 / 7) + 1;
+// 한국 시간 기준으로 주차 계산
+function getWeekNumber() {
+  const now = dayjs().tz("Asia/Seoul");
+  const firstDay = dayjs().startOf("year").tz("Asia/Seoul");
+  return Math.floor(now.diff(firstDay, "week")) + 1;
 }
 
-
-// 전체 목록 조회
+// 전체 습관 목록 조회
 export async function getHabits(studyId) {
   const id = Number(studyId);
-  if (!id) {
+  if (Number.isNaN(id)) {
     const err = new Error("studyId가 유효하지 않습니다.");
     err.status = 400;
     throw err;
   }
-  const weekNum = getWeekNumber(); // 몇주차
-  const habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum); //studyid, 주차
-  return habits;
-}
 
+  return habitRepo.findHabitsByStudy(id);
+}
 
 // 습관 생성
 export async function createHabit(studyId, payload) {
   const id = Number(studyId);
-  if (!id) {
-    const err = new Error("studyId가 유효하지 않습니다.");
+  if (Number.isNaN(id)) {
+    const err = new Error("유효한 studyId가 필요합니다.");
     err.status = 400;
     throw err;
   }
@@ -48,20 +42,25 @@ export async function createHabit(studyId, payload) {
     throw err;
   }
 
-  const weekNum = getWeekNumber(); // 이번 주차 구하기
-  const newHabit = await habitRepo.createHabit(id, weekNum, name);
-
-  return newHabit;
+  const weekNum = getWeekNumber();
+  return habitRepo.createHabit(id, weekNum, name);
 }
 
-
-// 습관이름변경
+// 습관 이름 변경
 export async function updateHabit(studyId, habitId, payload) {
   const id = Number(studyId);
   const hid = Number(habitId);
-  if (!id || !hid) {
+
+  if (Number.isNaN(id) || Number.isNaN(hid)) {
     const err = new Error("유효한 studyId, habitId가 필요합니다.");
     err.status = 400;
+    throw err;
+  }
+
+  const habit = await habitRepo.findHabitById(hid);
+  if (!habit) {
+    const err = new Error("해당 습관을 찾을 수 없습니다.");
+    err.status = 404;
     throw err;
   }
 
@@ -72,31 +71,20 @@ export async function updateHabit(studyId, habitId, payload) {
     throw err;
   }
 
-  // 기존 습관 찾기
-  const habit = await habitRepo.findHabitById(hid);
-  if (!habit) {
-    const err = new Error("해당 습관을 찾을 수 없습니다.");
-    err.status = 404;
-    throw err;
-  }
-
-  // 같은 이름이면 그냥 성공 처리
   if (habit.NAME === newName) {
-    return { message: "변경할 내용 없음", updated: false };
+    return { updated: false, message: "이전과 동일한 이름" };
   }
 
-  // STUDY_ID + 기존 NAME 로 전체 업데이트
   const result = await habitRepo.updateHabitName(id, habit.NAME, newName);
   return { updated: result.count, newName };
 }
-
 
 // 습관 삭제
 export async function deleteHabit(studyId, habitId) {
   const id = Number(studyId);
   const hid = Number(habitId);
 
-  if (!id || !hid) {
+  if (Number.isNaN(id) || Number.isNaN(hid)) {
     const err = new Error("유효한 studyId, habitId가 필요합니다.");
     err.status = 400;
     throw err;
@@ -109,7 +97,6 @@ export async function deleteHabit(studyId, habitId) {
     throw err;
   }
 
-  // 스터디 ID가 일치하는지
   if (habit.STUDY_ID !== id) {
     const err = new Error("해당 스터디에 속하지 않은 습관입니다.");
     err.status = 403;
@@ -121,34 +108,39 @@ export async function deleteHabit(studyId, habitId) {
   return { success: true };
 }
 
-
-
+// 오늘의 습관 조회
 export async function getTodayHabits(studyId) {
   const id = Number(studyId);
-  if (!id) {
+  if (Number.isNaN(id)) {
     const err = new Error("studyId가 유효하지 않습니다.");
     err.status = 400;
     throw err;
   }
 
-  const now = new Date();
-  const dow = now.getDay();
+  const now = dayjs().tz("Asia/Seoul");
+  const weekNum = getWeekNumber();
+  const dow = now.day();
   const todayField = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][dow];
 
-  const weekNum = getWeekNumber();
-  const habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
+  let habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
+
+  // 주차 이월 습관 자동 생성
+  if (habits.length === 0) {
+    await habitRepo.cloneHabitsToNextWeek(id, weekNum);
+    habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
+  }
 
   const result = habits.map(h => ({
     HABIT_ID: h.HABIT_ID,
     NAME: h.NAME,
-    isDone: h[todayField]
+    isDone: h[todayField],
   }));
 
   return {
-    serverTime: now,
+    serverTime: now.format("YYYY-MM-DD HH:mm:ss"),
     weekNum,
     day: todayField,
-    habits: result
+    habits: result,
   };
 }
 
@@ -158,7 +150,7 @@ export async function toggleTodayHabit(studyId, habitId, isDone) {
   const id = Number(studyId);
   const hid = Number(habitId);
 
-  if (!id || !hid) {
+  if (Number.isNaN(id) || Number.isNaN(hid)) {
     const err = new Error("유효한 studyId, habitId가 필요합니다.");
     err.status = 400;
     throw err;
@@ -171,21 +163,19 @@ export async function toggleTodayHabit(studyId, habitId, isDone) {
     throw err;
   }
 
-  // 스터디id 검증
   if (habit.STUDY_ID !== id) {
     const err = new Error("해당 스터디의 습관이 아닙니다.");
     err.status = 403;
     throw err;
   }
 
-  const now = new Date();
-  const dow = now.getDay();
-  const todayKey = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][dow];
-
+  const now = dayjs().tz("Asia/Seoul");
   const weekNum = getWeekNumber();
+  const todayKey = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][now.day()];
+
+  // 주차 자동 보정
   if (habit.WEEK_NUM !== weekNum) {
-    // 주차가 바뀌었으므로 create 후 update하는 방식 필요하지만,
-    // 현재는 신규 생성 순간부터 체크 가능하므로 그냥 업데이트 진행
+    await habitRepo.cloneHabitsToNextWeek(id, weekNum);
   }
 
   const updated = await habitRepo.updateToday(hid, todayKey, isDone);
@@ -196,4 +186,3 @@ export async function toggleTodayHabit(studyId, habitId, isDone) {
     isDone: updated[todayKey],
   };
 }
-
