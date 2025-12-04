@@ -1,4 +1,3 @@
-// src/controllers/emoji.controller.js
 import * as emojiService from '../services/emoji.service.js';
 
 export async function addOrIncreaseEmoji(req, res, next) {
