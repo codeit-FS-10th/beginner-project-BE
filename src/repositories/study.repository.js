@@ -11,17 +11,13 @@ export async function getStudy({ skip, take, sort = "newest" }) {
 
   switch (sort) {
     case "newest":
-      orderBy = { createdAt: "desc" }; 
+      orderBy = { REG_DATE: "desc" }; 
       break;
     case "oldest":
-      orderBy = { createdAt: "asc" }; 
+      orderBy = { REG_DATE: "asc" }; 
       break;
     case "point_desc":
-      orderBy = { totalPoint: "desc" }; 
-      break;
     case "point_asc":
-      orderBy = { totalPoint: "asc" }; 
-      break;
     default:
       orderBy = { createdAt: "desc" }; 
   }
@@ -29,7 +25,7 @@ export async function getStudy({ skip, take, sort = "newest" }) {
   return prisma.sTUDY.findMany({
     skip,
     take,
-    orderBy: { REG_DATE: 'desc' },
+    orderBy,
   });
 }
 
