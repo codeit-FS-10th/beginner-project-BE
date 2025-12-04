@@ -1,16 +1,13 @@
 // src/services/emoji.service.js
 import * as emojiRepository from '../repositories/emoji.repository.js';
 
-export async function addOrIncreaseEmoji(studyId, unicode) {
+export async function addOrIncreaseEmoji(studyId, code) {
   // 1) 이 스터디에서 이 이모지 쓴 적 있는지 확인
-  const existing = await emojiRepository.findEmojiByStudyAndUnicode(
-    studyId,
-    unicode
-  );
+  const existing = await emojiRepository.findEmojiByStudyAndCode(studyId, code);
 
   // 2) 없으면 새로 생성
   if (!existing) {
-    const created = await emojiRepository.createEmoji(studyId, unicode);
+    const created = await emojiRepository.createEmoji(studyId, code);
 
     return {
       isNew: true,
@@ -19,7 +16,7 @@ export async function addOrIncreaseEmoji(studyId, unicode) {
   }
 
   // 3) 있으면 COUNTING + 1
-  const updated = await emojiRepository.increaseEmojiCount(unicode);
+  const updated = await emojiRepository.increaseEmojiCount(code);
 
   return {
     isNew: false,
