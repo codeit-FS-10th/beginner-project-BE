@@ -1,6 +1,9 @@
 import * as habitRepo from "../repositories/habit.repository.js";
 import * as dateUtil from "../utils/date.util.js";
 
+// KST 시간, 주차, 요일값
+const { now, weekNum, todayField } = dateUtil.getTimeInfo();
+
 // 전체 습관 목록 조회
 export async function getHabits(studyId) {
   const id = Number(studyId);
@@ -10,7 +13,6 @@ export async function getHabits(studyId) {
     throw err;
   }
 
-  const weekNum = dateUtil.getWeekNumber();
   let habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
 
   // 습관 없으면 전 주차 습관 복사
@@ -38,7 +40,6 @@ export async function createHabit(studyId, payload) {
     throw err;
   }
 
-  const weekNum = dateUtil.getWeekNumber();
   return habitRepo.createHabit(id, weekNum, name);
 }
 
@@ -51,22 +52,18 @@ export async function getTodayHabits(studyId) {
     throw err;
   }
 
-  const now = dateUtil.getNowKST();
-  const weekNum = dateUtil.getWeekNumber();
-  const todayKey = dateUtil.getDayFieldFromDate(now);
-
-  let habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
+    let habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
 
   const result = habits.map(h => ({
     HABIT_ID: h.HABIT_ID,
     NAME: h.NAME,
-    isDone: h[todayKey],
+    isDone: h[todayField],
   }));
 
   return {
     serverTime: now.format("YYYY-MM-DD HH:mm:ss"),
     weekNum,
-    day: todayKey,
+    day: todayField,
     habits: result,
   };
 }
@@ -95,19 +92,16 @@ export async function toggleTodayHabit(studyId, habitId, isDone) {
     throw err;
   }
 
-  const now = dateUtil.getNowKST();
-  const todayKey = dateUtil.getDayFieldFromDate(now);
-
   // 주차 자동 보정
   if (habit.WEEK_NUM !== dateUtil.getWeekNumber()) {
     throw new Error("이전 주차 습관은 수정할 수 없습니다.");
   }
 
-  const updated = await habitRepo.updateToday(hid, todayKey, isDone);
+  const updated = await habitRepo.updateToday(hid, todayField, isDone);
 
   return {
     HABIT_ID: hid,
     NAME: updated.NAME,
-    isDone: updated[todayKey],
+    isDone: updated[todayField],
   };
 }

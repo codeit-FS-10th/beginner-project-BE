@@ -8,23 +8,32 @@ dayjs.tz.setDefault("Asia/Seoul");
 
 // KST 현재 시각
 export function getNowKST() {
-  return dayjs().tz();
-}
-
-// 출력용 포맷 설정
-export function formatDateKST(date) {
-  return dayjs(date).tz().format("YYYY-MM-DD HH:mm:ss");
+  return dayjs().tz("Asia/Seoul");
 }
 
 // KST 기준 주차 계산
 export function getWeekNumber() {
   const now = getNowKST();
-  const firstDay = now.startOf("year");
+  const firstDay = now.startOf("year").tz("Asia/Seoul");
   return Math.floor(now.diff(firstDay, "week")) + 1;
 }
 
-// 오늘 요일 (DB 칼럼 키)
+// KST 기반 요일 필드
+export function getDayFieldFromDate(date) {
+  return ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][date.day()];
+}
+
+// 오늘 요일 (DB 칼럼값 리턴)
 export function getTodayField() {
   const dow = getNowKST().day(); // 0 (SUN) ~ 6 (SAT);
   return ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"][dow];
+}
+
+export function getTimeInfo() {
+  const now = getNowKST();
+  return {
+    now,
+    weekNum: getWeekNumber(now),
+    todayField: getDayFieldFromDate(now),
+  };
 }
