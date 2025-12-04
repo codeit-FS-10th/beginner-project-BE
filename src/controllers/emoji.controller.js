@@ -28,6 +28,11 @@ export async function addOrIncreaseEmoji(req, res, next) {
 export async function getEmojisByStudy(req, res, next) {
   try {
     const studyId = Number(req.params.studyId);
+
+    if (!Number.isInteger(studyId) || studyId <= 0) {
+      return res.status(400).json({ message: '유효하지 않은 studyId 입니다.' });
+    }
+
     const emojis = await emojiService.getEmojisByStudy(studyId);
     return res.status(200).json({ data: emojis });
   } catch (err) {
