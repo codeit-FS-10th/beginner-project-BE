@@ -8,7 +8,6 @@ export async function addOrIncreaseEmoji(studyId, code) {
   // 2) 없으면 새로 생성
   if (!existing) {
     const created = await emojiRepository.createEmoji(studyId, code);
-
     return {
       isNew: true,
       emoji: created,
@@ -16,7 +15,7 @@ export async function addOrIncreaseEmoji(studyId, code) {
   }
 
   // 3) 있으면 COUNTING + 1
-  const updated = await emojiRepository.increaseEmojiCount(code);
+  const updated = await emojiRepository.increaseEmojiCount(studyId, code);
 
   return {
     isNew: false,

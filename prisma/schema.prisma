@@ -8,12 +8,13 @@ datasource db {
 }
 
 model EMOJI {
-  CODE     String   @id @db.VarChar(20)
   STUDY_ID Int      @db.UnsignedInt
+  CODE     String   @db.VarChar(50)
   COUNTING Int?     @default(0)
   REG_DATE DateTime @default(now()) @db.DateTime(0)
   STUDY    STUDY    @relation(fields: [STUDY_ID], references: [STUDY_ID], onDelete: Cascade, map: "FK_EMOJI_STUDY")
 
+  @@id([STUDY_ID, CODE])
   @@index([STUDY_ID], map: "FK_EMOJI_STUDY")
 }
 
