@@ -26,6 +26,15 @@ export async function getStudy({ skip, take, sort = "newest" }) {
     skip,
     take,
     orderBy,
+    include: {
+      POINT_MASTER: true, 
+      EMOJI: {
+        select: {
+          CODE: true,
+          COUNTING: true,
+        },
+      },
+    },
   });
 }
 
@@ -38,6 +47,15 @@ export function countStudies() {
 export async function findStudyById(studyId) {
   return prisma.sTUDY.findUnique({
     where: { STUDY_ID: studyId },
+    include: {
+      POINT_MASTER: true,
+      EMOJI: {
+        select: {
+          CODE: true,
+          COUNTING: true,
+        },
+      },
+    },
   });
 }
 
