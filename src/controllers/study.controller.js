@@ -8,14 +8,22 @@ export async function createStudy(req, res, next) {
     next(err);
   }
 }
-
 export async function getStudy(req, res, next) {
   try {
-    const { page = '1', limit = '10' } = req.query;
+    const {
+      page = "1",
+      limit = "10",
+      sort = "newest",
+    } = req.query;
+
+    const allowedSortValues = ["newest", "oldest", "point_desc", "point_asc"];
+
+    const safeSort = allowedSortValues.includes(sort) ? sort : "newest";
 
     const pagination = {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
+      sort: safeSort, 
     };
 
     const result = await studyService.getStudy(pagination);
