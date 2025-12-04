@@ -175,9 +175,8 @@ export async function toggleTodayHabit(studyId, habitId, isDone) {
 
   // 주차 자동 보정
   if (habit.WEEK_NUM !== weekNum) {
-    await habitRepo.cloneHabitsToNextWeek(id, weekNum);
+    throw new Error("이전 주차 습관은 수정할 수 없습니다. 오늘의 습관 화면에서 다시 조회하세요.");
   }
-
   const updated = await habitRepo.updateToday(hid, todayKey, isDone);
 
   return {

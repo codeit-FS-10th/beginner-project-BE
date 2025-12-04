@@ -33,7 +33,8 @@ export async function cloneHabitsToNextWeek(studyId, weekNum) {
 
   const prevHabits = await prisma.hABIT.findMany({
     where: {
-        STUDY_ID: studyId, WEEK_NUM: previousWeek
+        STUDY_ID: Number(studyId),
+        WEEK_NUM: previousWeek
     },
   });
 
