@@ -1,4 +1,4 @@
-import { prisma } from '../lib/prisma.js';
+import prisma from '../config/prisma.client.js';
 
 export async function findEmojiByStudyAndCode(studyId, code) {
   return prisma.eMOJI.findUnique({
