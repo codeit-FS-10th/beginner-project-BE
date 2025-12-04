@@ -23,7 +23,16 @@ export async function getHabits(studyId) {
     throw err;
   }
 
-  return habitRepo.findHabitsByStudy(id);
+  const weekNum = getWeekNumber();
+  let habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
+
+  // 습관 없으면 전 주차 습관 복사
+  if (habits.length === 0) {
+    await habitRepo.cloneHabitsToNextWeek(id, weekNum);
+    habits = await habitRepo.findHabitsByStudyAndWeek(id, weekNum);
+  }
+
+  return habits;
 }
 
 // 습관 생성
