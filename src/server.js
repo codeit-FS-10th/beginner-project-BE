@@ -22,6 +22,11 @@ app.use(morgan('dev'));
 app.use(express.json());
 app.use(cookieParser());
 
+app.use((req, res, next) => {
+  logger.info(`REQ ${req.method} ${req.url}`);
+  next();
+});
+
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
@@ -30,17 +35,14 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use('/api', router);
 
 app.use(notFound);
-app.use(errorHandler);
 
-app.listen(ENV.port, () => {
-  console.log(`✅ Server running on port ${ENV.port}`);
-});
-
-app.use((req, res, next) => {
-  logger.info(`REQ ${req.method} ${req.url}`);
-  next();
-});
 app.use((err, req, res, next) => {
   logger.error(`ERR ${err.message}`, { stack: err.stack });
   next(err);
+});
+
+app.use(errorHandler);
+
+app.listen(ENV.port, () => {
+  logger.info(`✅ Server running on port ${ENV.port}`);
 });
