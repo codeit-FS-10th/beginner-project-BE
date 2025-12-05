@@ -36,13 +36,13 @@ export async function createStudy(payload) {
 
 //============================== getStudy ==============================//
 
-export async function getStudy({ page, limit, sort = 'newest' }) {
+export async function getStudy({ page, limit, sort = 'newest', search } = {}) {
   const take = limit;
   const skip = (page - 1) * limit;
 
   const [studies, total] = await Promise.all([
-    studyRepo.getStudy({ skip, take, sort }),
-    studyRepo.countStudies(),
+    studyRepo.getStudy({ skip, take, sort, search }),
+    studyRepo.countStudies(search),
   ]);
 
   const safeStudies = studies.map(
