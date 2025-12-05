@@ -28,7 +28,7 @@ const router = Router();
  *             properties:
  *               code:
  *                 type: string
- *                 description: 추가하거나 증가시킬 이모지 코드 (예: "1F923")
+ *                 description: '추가하거나 증가시킬 이모지 코드 (예: "1F923")'
  *           example:
  *             code: "1F923"
  *     responses:
