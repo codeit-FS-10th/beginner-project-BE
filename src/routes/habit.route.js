@@ -48,6 +48,12 @@ const router = Router({ mergeParams: true });
  *                     type: boolean
  *                   SAT:
  *                     type: boolean
+ *                   REG_DATE:
+ *                     type: string
+ *                     format: date-time
+ *                   UPT_DATE:
+ *                     type: string
+ *                     format: date-time
  *             example:
  *               - HABIT_ID: 1
  *                 STUDY_ID: 1
@@ -60,6 +66,8 @@ const router = Router({ mergeParams: true });
  *                 THU: false
  *                 FRI: false
  *                 SAT: false
+ *                 REG_DATE: "2025-12-01T00:00:00.000Z"
+ *                 UPT_DATE: "2025-12-01T00:00:00.000Z"
  *       400:
  *         description: studyId가 유효하지 않음
  *       500:
@@ -117,6 +125,12 @@ const router = Router({ mergeParams: true });
  *                   type: boolean
  *                 SAT:
  *                   type: boolean
+ *                 REG_DATE:
+ *                   type: string
+ *                   format: date-time
+ *                 UPT_DATE:
+ *                   type: string
+ *                   format: date-time
  *             example:
  *               HABIT_ID: 3
  *               STUDY_ID: 1
@@ -129,6 +143,8 @@ const router = Router({ mergeParams: true });
  *               THU: false
  *               FRI: false
  *               SAT: false
+ *               REG_DATE: "2025-12-02T00:00:00.000Z"
+ *               UPT_DATE: "2025-12-02T00:00:00.000Z"
  *       400:
  *         description: studyId 또는 name이 유효하지 않음
  *       500:
@@ -185,8 +201,9 @@ const router = Router({ mergeParams: true });
  *             examples:
  *               no-change:
  *                 value:
- *                   message: "변경할 내용 없음"
- *                   updated: false
+ *                   message: "이전과 동일한 이름"
+ *                   updated: 0
+ *                   newName: "물 1.5L 마시기"
  *               updated:
  *                 value:
  *                   updated: 3
@@ -258,6 +275,7 @@ const router = Router({ mergeParams: true });
  *               properties:
  *                 serverTime:
  *                   type: string
+ *                   description: 서버 현재 시간 (YYYY-MM-DD HH:mm:ss)
  *                 weekNum:
  *                   type: integer
  *                 day:
@@ -275,7 +293,7 @@ const router = Router({ mergeParams: true });
  *                       isDone:
  *                         type: boolean
  *             example:
- *               serverTime: "2025-12-02T11:30:00.000Z"
+ *               serverTime: "2025-12-02 11:30:00"
  *               weekNum: 1
  *               day: "TUE"
  *               habits:
