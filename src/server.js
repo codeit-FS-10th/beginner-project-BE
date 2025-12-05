@@ -10,6 +10,7 @@ import { securityMiddleware } from './config/security.js';
 import { notFound } from './middlewares/notFound.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { swaggerUi, swaggerSpec } from './config/swagger.js';
+import { logger } from './utils/logger.js';
 
 dotenv.config();
 
@@ -33,4 +34,13 @@ app.use(errorHandler);
 
 app.listen(ENV.port, () => {
   console.log(`✅ Server running on port ${ENV.port}`);
+});
+
+app.use((req, res, next) => {
+  logger.info(`REQ ${req.method} ${req.url}`);
+  next();
+});
+app.use((err, req, res, next) => {
+  logger.error(`ERR ${err.message}`, { stack: err.stack });
+  next(err);
 });
