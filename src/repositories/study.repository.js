@@ -17,7 +17,11 @@ export async function getStudy({ skip, take, sort = "newest" }) {
       orderBy = { REG_DATE: "asc" }; 
       break;
     case "point_desc":
+      orderBy = { POINT_MASTER: { TOTAL_POINT: "desc" } };
+      break;
     case "point_asc":
+      orderBy = { POINT_MASTER: { TOTAL_POINT: "asc" } };
+      break;
     default:
       orderBy = { REG_DATE: "desc" }; 
   }
