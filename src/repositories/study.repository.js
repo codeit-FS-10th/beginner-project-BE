@@ -18,19 +18,21 @@ export async function getStudy({ skip, take, sort = "newest" }) {
       LIMIT ? OFFSET ?
     `, take, skip);
     
-    // 각 study의 EMOJI와 POINT_MASTER 데이터 추가로 조회
     return Promise.all(
       studies.map(async (study) => {
+        const studyId = Number(study.STUDY_ID);
+
         const pointMaster = await prisma.pOINT_MASTER.findUnique({
-          where: { STUDY_ID: study.STUDY_ID },
+          where: { STUDY_ID: studyId },
         });
         
         const emojis = await prisma.eMOJI.findMany({
-          where: { STUDY_ID: study.STUDY_ID },
+          where: { STUDY_ID: studyId },
         });
         
         return {
           ...study,
+          STUDY_ID: studyId,
           POINT_MASTER: pointMaster,
           EMOJI: emojis,
         };
