@@ -1,10 +1,8 @@
-// prisma/seed.js
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  // 1) STUDY mock 데이터 생성
   const study1 = await prisma.sTUDY.create({
     data: {
       PASSWORD: '1111',
