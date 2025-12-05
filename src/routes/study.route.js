@@ -33,7 +33,7 @@ const router = Router();
  *         schema:
  *           type: string
  *           default: newest
- *         description: 정렬 기준 (예: newest, oldest 등)
+ *         description: '정렬 기준 (예: newest, oldest 등)'
  *     responses:
  *       200:
  *         description: 스터디 목록을 성공적으로 가져옴
