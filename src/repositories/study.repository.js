@@ -6,18 +6,21 @@ export function createStudy(data) {
   });
 }
 
-export async function getStudy({ skip, take, sort = "newest" }) {
+export async function getStudy({ skip, take, sort = "newest", search }) {
+  const hasSearch = typeof search === 'string' && search.trim() !== '';
+  const searchValue = hasSearch ? `%${search.trim()}%` : null;
+
   if (sort === "point_desc" || sort === "point_asc") {
     const direction = sort === "point_desc" ? "DESC" : "ASC";
-    
-    const studies = await prisma.$queryRawUnsafe(`
-      SELECT s.*
-      FROM STUDY s
-      LEFT JOIN POINT_MASTER p ON s.STUDY_ID = p.STUDY_ID
-      ORDER BY COALESCE(p.TOTAL_POINT, 0) ${direction}, s.STUDY_ID DESC
-      LIMIT ? OFFSET ?
-    `, take, skip);
-    
+
+    const whereClause = hasSearch ? `WHERE s.NAME LIKE ? OR s.NICKNAME LIKE ?` : '';
+    const params = hasSearch ? [searchValue, searchValue, take, skip] : [take, skip];
+
+    const studies = await prisma.$queryRawUnsafe(
+      `SELECT s.* FROM STUDY s LEFT JOIN POINT_MASTER p ON s.STUDY_ID = p.STUDY_ID ${whereClause} ORDER BY COALESCE(p.TOTAL_POINT, 0) ${direction}, s.STUDY_ID DESC LIMIT ? OFFSET ?`,
+      ...params
+    );
+
     return Promise.all(
       studies.map(async (study) => {
         const studyId = Number(study.STUDY_ID);
@@ -25,11 +28,11 @@ export async function getStudy({ skip, take, sort = "newest" }) {
         const pointMaster = await prisma.pOINT_MASTER.findUnique({
           where: { STUDY_ID: studyId },
         });
-        
+
         const emojis = await prisma.eMOJI.findMany({
           where: { STUDY_ID: studyId },
         });
-        
+
         return {
           ...study,
           STUDY_ID: studyId,
@@ -44,21 +47,31 @@ export async function getStudy({ skip, take, sort = "newest" }) {
 
   switch (sort) {
     case "newest":
-      orderBy = { REG_DATE: "desc" }; 
+      orderBy = { REG_DATE: "desc" };
       break;
     case "oldest":
-      orderBy = { REG_DATE: "asc" }; 
+      orderBy = { REG_DATE: "asc" };
       break;
     default:
-      orderBy = { REG_DATE: "desc" }; 
+      orderBy = { REG_DATE: "desc" };
   }
+
+  const where = hasSearch
+    ? {
+        OR: [
+          { NAME: { contains: search.trim() } },
+          { NICKNAME: { contains: search.trim() } },
+        ],
+      }
+    : undefined;
 
   return prisma.sTUDY.findMany({
     skip,
     take,
     orderBy,
+    where,
     include: {
-      POINT_MASTER: true, 
+      POINT_MASTER: true,
       EMOJI: {
         select: {
           CODE: true,
@@ -70,8 +83,18 @@ export async function getStudy({ skip, take, sort = "newest" }) {
 }
 
 // 전체 개수 카운트용
-export function countStudies() {
-  return prisma.sTUDY.count();
+export function countStudies(search) {
+  const hasSearch = typeof search === 'string' && search.trim() !== '';
+  if (!hasSearch) return prisma.sTUDY.count();
+
+  return prisma.sTUDY.count({
+    where: {
+      OR: [
+        { NAME: { contains: search.trim() } },
+        { NICKNAME: { contains: search.trim() } },
+      ],
+    },
+  });
 }
 
 // 스터디 단건 조회

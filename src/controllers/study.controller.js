@@ -14,6 +14,7 @@ export async function getStudy(req, res, next) {
       page = "1",
       limit = "10",
       sort = "newest",
+      search = "",
     } = req.query;
 
     const allowedSortValues = ["newest", "oldest", "point_desc", "point_asc"];
@@ -23,7 +24,8 @@ export async function getStudy(req, res, next) {
     const pagination = {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
-      sort: safeSort, 
+      sort: safeSort,
+      search: String(search || "").trim(),
     };
 
     const result = await studyService.getStudy(pagination);
