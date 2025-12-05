@@ -9,53 +9,92 @@ const router = Router();
  * @openapi
  * /api/studies:
  *   get:
- *     summary: 스터디 목록 조회
+ *     summary: 스터디 목록 조회 (페이지네이션)
  *     tags:
  *       - Study
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         description: 페이지 번호 (1부터 시작)
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *           default: 10
+ *         description: 한 페이지당 항목 수
+ *       - in: query
+ *         name: sort
+ *         required: false
+ *         schema:
+ *           type: string
+ *           default: newest
+ *         description: 정렬 기준 (예: newest, oldest 등)
  *     responses:
  *       200:
  *         description: 스터디 목록을 성공적으로 가져옴
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   STUDY_ID:
- *                     type: integer
- *                   NAME:
- *                     type: string
- *                   NICKNAME:
- *                     type: string
- *                   INTRO:
- *                     type: string
- *                     nullable: true
- *                   IMAGE:
- *                     type: string
- *                     nullable: true
- *                   REG_DATE:
- *                     type: string
- *                     format: date-time
- *                   UPT_DATE:
- *                     type: string
- *                     format: date-time
- *                     nullable: true
+ *               type: object
+ *               properties:
+ *                 total:
+ *                   type: integer
+ *                   description: 전체 스터디 개수
+ *                 page:
+ *                   type: integer
+ *                 limit:
+ *                   type: integer
+ *                 totalPages:
+ *                   type: integer
+ *                 items:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       STUDY_ID:
+ *                         type: integer
+ *                       NAME:
+ *                         type: string
+ *                       NICKNAME:
+ *                         type: string
+ *                       INTRO:
+ *                         type: string
+ *                         nullable: true
+ *                       IMAGE:
+ *                         type: string
+ *                         nullable: true
+ *                       REG_DATE:
+ *                         type: string
+ *                         format: date-time
+ *                       UPT_DATE:
+ *                         type: string
+ *                         format: date-time
+ *                         nullable: true
  *             example:
- *               - STUDY_ID: 1
- *                 NAME: "오늘의 습관 스터디"
- *                 NICKNAME: "킴명"
- *                 INTRO: "열심히 해보자"
- *                 IMAGE: "https://example.com/image1.png"
- *                 REG_DATE: "2025-12-01T10:00:00.000Z"
- *                 UPT_DATE: "2025-12-01T10:00:00.000Z"
- *               - STUDY_ID: 2
- *                 NAME: "코딩 스터디"
- *                 NICKNAME: "홍길동"
- *                 INTRO: "하루 1커밋"
- *                 IMAGE: null
- *                 REG_DATE: "2025-12-01T11:00:00.000Z"
- *                 UPT_DATE: null
+ *               total: 2
+ *               page: 1
+ *               limit: 10
+ *               totalPages: 1
+ *               items:
+ *                 - STUDY_ID: 1
+ *                   NAME: "오늘의 습관 스터디"
+ *                   NICKNAME: "킴명"
+ *                   INTRO: "열심히 해보자"
+ *                   IMAGE: "https://example.com/image1.png"
+ *                   REG_DATE: "2025-12-01T10:00:00.000Z"
+ *                   UPT_DATE: "2025-12-01T10:00:00.000Z"
+ *                 - STUDY_ID: 2
+ *                   NAME: "코딩 스터디"
+ *                   NICKNAME: "홍길동"
+ *                   INTRO: "하루 1커밋"
+ *                   IMAGE: null
+ *                   REG_DATE: "2025-12-01T11:00:00.000Z"
+ *                   UPT_DATE: null
  *       500:
  *         description: 서버 에러
  *
@@ -76,16 +115,16 @@ const router = Router();
  *             properties:
  *               name:
  *                 type: string
- *                 example: 오늘의 습관 스터디
+ *                 example: "오늘의 습관 스터디"
  *               nickname:
  *                 type: string
- *                 example: 킴명
+ *                 example: "킴명"
  *               password:
  *                 type: string
  *                 example: "1234"
  *               intro:
  *                 type: string
- *                 example: 열심히 해보자
+ *                 example: "열심히 해보자"
  *               image:
  *                 type: string
  *                 nullable: true

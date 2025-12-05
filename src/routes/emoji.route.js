@@ -24,13 +24,13 @@ const router = Router();
  *           schema:
  *             type: object
  *             required:
- *               - unicode
+ *               - code
  *             properties:
- *               unicode:
+ *               code:
  *                 type: string
- *                 description: 추가하거나 증가시킬 이모지 유니코드 문자
+ *                 description: 추가하거나 증가시킬 이모지 코드 (예: "1F923")
  *           example:
- *             unicode: "🔥"
+ *             code: "1F923"
  *     responses:
  *       201:
  *         description: 해당 스터디에 이모지가 처음 생성된 경우
@@ -46,7 +46,7 @@ const router = Router();
  *                   properties:
  *                     STUDY_ID:
  *                       type: integer
- *                     UNICODE:
+ *                     CODE:
  *                       type: string
  *                     COUNTING:
  *                       type: integer
@@ -54,7 +54,7 @@ const router = Router();
  *               message: "이모지 첫 생성"
  *               data:
  *                 STUDY_ID: 1
- *                 UNICODE: "🔥"
+ *                 CODE: "1F923"
  *                 COUNTING: 1
  *       200:
  *         description: 기존 이모지의 카운트가 증가한 경우
@@ -70,7 +70,7 @@ const router = Router();
  *                   properties:
  *                     STUDY_ID:
  *                       type: integer
- *                     UNICODE:
+ *                     CODE:
  *                       type: string
  *                     COUNTING:
  *                       type: integer
@@ -78,10 +78,10 @@ const router = Router();
  *               message: "이모지 카운트 증가"
  *               data:
  *                 STUDY_ID: 1
- *                 UNICODE: "🔥"
+ *                 CODE: "1F923"
  *                 COUNTING: 3
  *       400:
- *         description: 유효하지 않은 studyId 이거나 unicode 누락
+ *         description: 유효하지 않은 studyId 이거나 code 누락
  *       500:
  *         description: 서버 에러
  *   get:
@@ -110,17 +110,17 @@ const router = Router();
  *                     properties:
  *                       STUDY_ID:
  *                         type: integer
- *                       UNICODE:
+ *                       CODE:
  *                         type: string
  *                       COUNTING:
  *                         type: integer
  *             example:
  *               data:
  *                 - STUDY_ID: 1
- *                   UNICODE: "🔥"
+ *                   CODE: "1F923"
  *                   COUNTING: 3
  *                 - STUDY_ID: 1
- *                   UNICODE: "👍"
+ *                   CODE: "1F602"
  *                   COUNTING: 5
  *       400:
  *         description: 유효하지 않은 studyId
