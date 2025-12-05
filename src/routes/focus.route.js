@@ -55,17 +55,22 @@ const router = Router({ mergeParams: true });
  *                   example: 6
  *                 totalPoint:
  *                   type: integer
- *                   description: 적립 후 누적 포인트
+ *                   description: 적립 후 누적 포인트 (POINT_MASTER.TOTAL_POINT)
  *                   example: 120
  *                 history:
  *                   type: object
- *                   description: 이번에 생성된 포인트 이력 레코드
+ *                   description: 이번에 생성된 포인트 이력 레코드(POINT_HISTORY)
  *                   properties:
+ *                     POINT_ID:
+ *                       type: integer
  *                     STUDY_ID:
  *                       type: integer
  *                     POINT:
  *                       type: integer
  *                     REG_DATE:
+ *                       type: string
+ *                       format: date-time
+ *                     UPT_DATE:
  *                       type: string
  *                       format: date-time
  *             example:
@@ -75,9 +80,11 @@ const router = Router({ mergeParams: true });
  *               point: 6
  *               totalPoint: 120
  *               history:
+ *                 POINT_ID: 10
  *                 STUDY_ID: 1
  *                 POINT: 6
  *                 REG_DATE: "2025-12-02T11:30:00.000Z"
+ *                 UPT_DATE: "2025-12-02T11:30:00.000Z"
  *       400:
  *         description: 유효하지 않은 studyId이거나 timeSec이 1 미만인 경우
  *       404:

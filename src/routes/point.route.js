@@ -41,8 +41,10 @@ const router = Router();
  *               properties:
  *                 history:
  *                   type: object
- *                   description: 새로 생성된 포인트 이력 레코드
+ *                   description: 새로 생성된 포인트 이력 레코드 (POINT_HISTORY)
  *                   properties:
+ *                     POINT_ID:
+ *                       type: integer
  *                     STUDY_ID:
  *                       type: integer
  *                     POINT:
@@ -50,20 +52,28 @@ const router = Router();
  *                     REG_DATE:
  *                       type: string
  *                       format: date-time
+ *                     UPT_DATE:
+ *                       type: string
+ *                       format: date-time
  *                 master:
  *                   type: object
- *                   description: 업데이트된 포인트 마스터 정보
+ *                   description: 업데이트된 포인트 마스터 정보 (POINT_MASTER)
  *                   properties:
+ *                     TOTAL_POINT_ID:
+ *                       type: integer
  *                     STUDY_ID:
  *                       type: integer
  *                     TOTAL_POINT:
  *                       type: integer
  *             example:
  *               history:
+ *                 POINT_ID: 15
  *                 STUDY_ID: 1
  *                 POINT: 10
  *                 REG_DATE: "2025-12-02T11:30:00.000Z"
+ *                 UPT_DATE: "2025-12-02T11:30:00.000Z"
  *               master:
+ *                 TOTAL_POINT_ID: 3
  *                 STUDY_ID: 1
  *                 TOTAL_POINT: 120
  *       400:
@@ -105,6 +115,8 @@ const router = Router();
  *                   items:
  *                     type: object
  *                     properties:
+ *                       POINT_ID:
+ *                         type: integer
  *                       STUDY_ID:
  *                         type: integer
  *                       POINT:
@@ -112,15 +124,22 @@ const router = Router();
  *                       REG_DATE:
  *                         type: string
  *                         format: date-time
+ *                       UPT_DATE:
+ *                         type: string
+ *                         format: date-time
  *             example:
  *               totalPoint: 120
  *               history:
- *                 - STUDY_ID: 1
+ *                 - POINT_ID: 15
+ *                   STUDY_ID: 1
  *                   POINT: 10
  *                   REG_DATE: "2025-12-02T11:30:00.000Z"
- *                 - STUDY_ID: 1
+ *                   UPT_DATE: "2025-12-02T11:30:00.000Z"
+ *                 - POINT_ID: 12
+ *                   STUDY_ID: 1
  *                   POINT: 50
  *                   REG_DATE: "2025-12-01T09:10:00.000Z"
+ *                   UPT_DATE: "2025-12-01T09:10:00.000Z"
  *       404:
  *         description: 존재하지 않는 스터디
  *       500:
