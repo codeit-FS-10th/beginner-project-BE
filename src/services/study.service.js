@@ -45,7 +45,16 @@ export async function getStudy({ page, limit, sort = 'newest' }) {
     studyRepo.countStudies(),
   ]);
 
-  const safeStudies = studies.map(({ PASSWORD, ...rest }) => rest);
+  const safeStudies = studies.map(
+    ({ PASSWORD, POINT_MASTER, EMOJI, ...rest }) => ({
+      ...rest,
+      totalPoint: POINT_MASTER?.TOTAL_POINT ?? 0,
+      emojis: (EMOJI ?? []).map((emoji) => ({
+        code: emoji.CODE,
+        counting: emoji.COUNTING ?? 0,
+      })),
+    })
+  );
 
   return {
     total,
@@ -56,18 +65,19 @@ export async function getStudy({ page, limit, sort = 'newest' }) {
   };
 }
 
+
 //============================== getStudyDetail ==============================//
 
 export async function getStudyDetail(studyId) {
   if (!studyId) {
-    const err = new Error('studyId는 필수입니다.');
+    const err = new Error("studyId는 필수입니다.");
     err.status = 400;
     throw err;
   }
 
   const id = Number(studyId);
   if (Number.isNaN(id)) {
-    const err = new Error('studyId는 숫자여야 합니다.');
+    const err = new Error("studyId는 숫자여야 합니다.");
     err.status = 400;
     throw err;
   }
@@ -75,13 +85,22 @@ export async function getStudyDetail(studyId) {
   const study = await studyRepo.findStudyById(id);
 
   if (!study) {
-    const err = new Error('해당 스터디를 찾을 수 없습니다.');
+    const err = new Error("해당 스터디를 찾을 수 없습니다.");
     err.status = 404;
     throw err;
   }
 
-  const { PASSWORD, ...safeStudy } = study;
-  return safeStudy;
+
+  const { PASSWORD, POINT_MASTER, EMOJI, ...safeStudy } = study;
+
+  return {
+    ...safeStudy,
+    totalPoint: POINT_MASTER?.TOTAL_POINT ?? 0,
+    emojis: (EMOJI ?? []).map((emoji) => ({
+      code: emoji.CODE,
+      counting: emoji.COUNTING ?? 0,
+    })),
+  };
 }
 
 // ============================== verifyStudyPassword ============================== //
