@@ -68,6 +68,7 @@ const router = Router();
  *                       IMAGE:
  *                         type: string
  *                         nullable: true
+ *                         description: '배경 코드 (예: green, yellow, blue, pink, mouse_tablet, tablet_bottle, diamond, leaf)'
  *                       REG_DATE:
  *                         type: string
  *                         format: date-time
@@ -85,14 +86,14 @@ const router = Router();
  *                   NAME: "오늘의 습관 스터디"
  *                   NICKNAME: "킴명"
  *                   INTRO: "열심히 해보자"
- *                   IMAGE: "https://example.com/image1.png"
+ *                   IMAGE: "green"
  *                   REG_DATE: "2025-12-01T10:00:00.000Z"
  *                   UPT_DATE: "2025-12-01T10:00:00.000Z"
  *                 - STUDY_ID: 2
  *                   NAME: "코딩 스터디"
  *                   NICKNAME: "홍길동"
  *                   INTRO: "하루 1커밋"
- *                   IMAGE: null
+ *                   IMAGE: "leaf"
  *                   REG_DATE: "2025-12-01T11:00:00.000Z"
  *                   UPT_DATE: null
  *       500:
@@ -128,7 +129,8 @@ const router = Router();
  *               image:
  *                 type: string
  *                 nullable: true
- *                 example: "https://example.com/image.png"
+ *                 description: '배경 코드 (예: green, yellow, blue, pink, mouse_tablet, tablet_bottle, diamond, leaf)'
+ *                 example: "leaf"
  *     responses:
  *       201:
  *         description: 생성된 스터디 정보
@@ -149,6 +151,7 @@ const router = Router();
  *                 IMAGE:
  *                   type: string
  *                   nullable: true
+ *                   description: '배경 코드 (예: green, yellow, blue, pink, mouse_tablet, tablet_bottle, diamond, leaf)'
  *                 REG_DATE:
  *                   type: string
  *                   format: date-time
@@ -161,7 +164,7 @@ const router = Router();
  *               NAME: "오늘의 습관 스터디"
  *               NICKNAME: "킴명"
  *               INTRO: "열심히 해보자"
- *               IMAGE: "https://example.com/image.png"
+ *               IMAGE: "mouse_tablet"
  *               REG_DATE: "2025-12-01T10:00:00.000Z"
  *               UPT_DATE: "2025-12-01T10:00:00.000Z"
  *       400:
@@ -204,6 +207,7 @@ const router = Router();
  *                 IMAGE:
  *                   type: string
  *                   nullable: true
+ *                   description: '배경 코드 (예: green, yellow, blue, pink, mouse_tablet, tablet_bottle, diamond, leaf)'
  *                 REG_DATE:
  *                   type: string
  *                   format: date-time
@@ -216,7 +220,7 @@ const router = Router();
  *               NAME: "오늘의 습관 스터디"
  *               NICKNAME: "킴명"
  *               INTRO: "열심히 해보자"
- *               IMAGE: "https://example.com/image.png"
+ *               IMAGE: "yellow"
  *               REG_DATE: "2025-12-01T10:00:00.000Z"
  *               UPT_DATE: "2025-12-02T09:30:00.000Z"
  *       400:
@@ -254,6 +258,8 @@ const router = Router();
  *                 type: string
  *               image:
  *                 type: string
+ *                 nullable: true
+ *                 description: '배경 코드 (예: green, yellow, blue, pink, mouse_tablet, tablet_bottle, diamond, leaf)'
  *     responses:
  *       200:
  *         description: 수정된 스터디 정보
@@ -274,6 +280,7 @@ const router = Router();
  *                 IMAGE:
  *                   type: string
  *                   nullable: true
+ *                   description: '배경 코드 (예: green, yellow, blue, pink, mouse_tablet, tablet_bottle, diamond, leaf)'
  *                 REG_DATE:
  *                   type: string
  *                   format: date-time
@@ -286,7 +293,7 @@ const router = Router();
  *               NAME: "오늘의 습관 스터디(수정)"
  *               NICKNAME: "킴명"
  *               INTRO: "열심히 해보자🔥"
- *               IMAGE: "https://example.com/image.png"
+ *               IMAGE: "pink"
  *               REG_DATE: "2025-12-01T10:00:00.000Z"
  *               UPT_DATE: "2025-12-02T10:00:00.000Z"
  *       400:
