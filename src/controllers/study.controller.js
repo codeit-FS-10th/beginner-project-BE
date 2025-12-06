@@ -2,30 +2,32 @@ import * as studyService from '../services/study.service.js';
 
 export async function createStudy(req, res, next) {
   try {
+    console.log('받은 payload:', req.body);
     const result = await studyService.createStudy(req.body);
     return res.status(201).json(result);
   } catch (err) {
     next(err);
   }
 }
+
 export async function getStudy(req, res, next) {
   try {
     const {
-      page = "1",
-      limit = "10",
-      sort = "newest",
-      search = "",
+      page = '1',
+      limit = '10',
+      sort = 'newest',
+      search = '',
     } = req.query;
 
-    const allowedSortValues = ["newest", "oldest", "point_desc", "point_asc"];
+    const allowedSortValues = ['newest', 'oldest', 'point_desc', 'point_asc'];
 
-    const safeSort = allowedSortValues.includes(sort) ? sort : "newest";
+    const safeSort = allowedSortValues.includes(sort) ? sort : 'newest';
 
     const pagination = {
       page: Number(page) || 1,
       limit: Number(limit) || 10,
       sort: safeSort,
-      search: String(search || "").trim(),
+      search: String(search || '').trim(),
     };
 
     const result = await studyService.getStudy(pagination);

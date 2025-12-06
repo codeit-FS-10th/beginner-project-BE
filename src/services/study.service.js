@@ -11,15 +11,15 @@ if (!PEPPER) {
 //============================== createStudy ==============================//
 
 export async function createStudy(payload) {
-  const { name, nickname, password, intro, image } = payload;
+  const { name, nickname, password, intro, image: imageCode } = payload;
 
+  console.log('서비스에서 사용하는 imageCode:', imageCode);
   if (!name || !nickname || !password) {
     const err = new Error('name, nickname, password는 필수입니다.');
     err.status = 400;
     throw err;
   }
 
-  // ✅ 새로 생성되는 건 전부 pepper 버전으로
   const hashedPassword = await bcrypt.hash(password + PEPPER, 10);
 
   const study = await studyRepo.createStudy({
@@ -27,7 +27,7 @@ export async function createStudy(payload) {
     NICKNAME: nickname,
     PASSWORD: hashedPassword,
     INTRO: intro ?? null,
-    IMAGE: image ?? null,
+    IMAGE: imageCode ?? null,
   });
 
   const { PASSWORD, ...safeStudy } = study;
@@ -65,19 +65,18 @@ export async function getStudy({ page, limit, sort = 'newest', search } = {}) {
   };
 }
 
-
 //============================== getStudyDetail ==============================//
 
 export async function getStudyDetail(studyId) {
   if (!studyId) {
-    const err = new Error("studyId는 필수입니다.");
+    const err = new Error('studyId는 필수입니다.');
     err.status = 400;
     throw err;
   }
 
   const id = Number(studyId);
   if (Number.isNaN(id)) {
-    const err = new Error("studyId는 숫자여야 합니다.");
+    const err = new Error('studyId는 숫자여야 합니다.');
     err.status = 400;
     throw err;
   }
@@ -85,11 +84,10 @@ export async function getStudyDetail(studyId) {
   const study = await studyRepo.findStudyById(id);
 
   if (!study) {
-    const err = new Error("해당 스터디를 찾을 수 없습니다.");
+    const err = new Error('해당 스터디를 찾을 수 없습니다.');
     err.status = 404;
     throw err;
   }
-
 
   const { PASSWORD, POINT_MASTER, EMOJI, ...safeStudy } = study;
 
@@ -159,14 +157,14 @@ export async function updateStudy(studyId, payload) {
     throw err;
   }
 
-  const { name, nickname, password, intro, image } = payload || {};
+  const { name, nickname, password, intro, image: imageCode } = payload || {};
 
   if (
     name === undefined &&
     nickname === undefined &&
     password === undefined &&
     intro === undefined &&
-    image === undefined
+    imageCode === undefined
   ) {
     const err = new Error('수정할 값이 없습니다.');
     err.status = 400;
@@ -178,9 +176,9 @@ export async function updateStudy(studyId, payload) {
   if (name !== undefined) updateData.NAME = name;
   if (nickname !== undefined) updateData.NICKNAME = nickname;
   if (intro !== undefined) updateData.INTRO = intro;
-  if (image !== undefined) updateData.IMAGE = image;
 
-  // ✅ 앞으로 비밀번호 변경은 전부 pepper 버전
+  if (imageCode !== undefined) updateData.IMAGE = imageCode;
+
   if (password !== undefined) {
     const hashedPassword = await bcrypt.hash(password + PEPPER, 10);
     updateData.PASSWORD = hashedPassword;
