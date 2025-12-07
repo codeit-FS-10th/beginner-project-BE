@@ -1,5 +1,6 @@
 import * as studyRepo from '../repositories/study.repository.js';
 import bcrypt from 'bcrypt';
+import * as jwtUtil from '../utils/jwt.util.js';
 
 // 🔐 서비스 전역 pepper
 const PEPPER = process.env.PEPPER_SECRET;
@@ -144,7 +145,11 @@ export async function verifyStudyPassword(studyId, password) {
     throw err;
   }
 
-  return { verified: true };
+  const token = jwtUtil.signToken({ studyId: study.STUDY_ID });
+
+  return { verified: true, token };
+
+  
 }
 
 // ============================== updateStudy ============================== //
