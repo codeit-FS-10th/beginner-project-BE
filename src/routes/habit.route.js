@@ -375,8 +375,5 @@ router.post('/', habitController.createHabit);
 router.patch('/:habitId', habitController.updateHabit);
 router.delete('/:habitId', habitController.deleteHabit);
 router.patch('/:habitId/today', habitController.toggleTodayHabit);
-router.get('/:studyId/today', verifyStudyAuth, habitController.getTodayHabits);
-router.patch('/:studyId/today/:habitId', verifyStudyAuth, habitController.toggleTodayHabit);
-
 
 export default router;
