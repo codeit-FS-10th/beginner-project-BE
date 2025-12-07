@@ -144,7 +144,11 @@ export async function verifyStudyPassword(studyId, password) {
     throw err;
   }
 
-  return { verified: true };
+  const token = jwtUtil.signToken({ studyId: id });
+  
+  return { verified: true, token };
+
+  
 }
 
 // ============================== updateStudy ============================== //
