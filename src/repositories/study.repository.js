@@ -114,9 +114,11 @@ export async function findStudyById(studyId) {
           COUNTING: true,
         },
       },
+      HABIT: true, 
     },
   });
 }
+
 
 // 스터디 수정
 export async function updateStudy(studyId, data) {

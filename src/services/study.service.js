@@ -70,14 +70,14 @@ export async function getStudy({ page, limit, sort = 'newest', search } = {}) {
 
 export async function getStudyDetail(studyId) {
   if (!studyId) {
-    const err = new Error('studyId는 필수입니다.');
+    const err = new Error("studyId는 필수입니다.");
     err.status = 400;
     throw err;
   }
 
   const id = Number(studyId);
   if (Number.isNaN(id)) {
-    const err = new Error('studyId는 숫자여야 합니다.');
+    const err = new Error("studyId는 숫자여야 합니다.");
     err.status = 400;
     throw err;
   }
@@ -85,12 +85,13 @@ export async function getStudyDetail(studyId) {
   const study = await studyRepo.findStudyById(id);
 
   if (!study) {
-    const err = new Error('해당 스터디를 찾을 수 없습니다.');
+    const err = new Error("해당 스터디를 찾을 수 없습니다.");
     err.status = 404;
     throw err;
   }
 
-  const { PASSWORD, POINT_MASTER, EMOJI, ...safeStudy } = study;
+  // HABIT 도 같이 구조 분해
+  const { PASSWORD, POINT_MASTER, EMOJI, HABIT, ...safeStudy } = study;
 
   return {
     ...safeStudy,
@@ -99,6 +100,8 @@ export async function getStudyDetail(studyId) {
       code: emoji.CODE,
       counting: emoji.COUNTING ?? 0,
     })),
+    // ✅ 상세 응답에 하빗 전체 추가
+    habits: HABIT ?? [],
   };
 }
 
