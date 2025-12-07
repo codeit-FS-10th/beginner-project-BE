@@ -367,16 +367,14 @@ const router = Router({ mergeParams: true });
  *         description: 서버 에러
  */
 
-router.use(verifyStudyAuth);
-
 router.get('/', habitController.getHabits);
+
+router.use(verifyStudyAuth);// 습관 API 보호
 router.get('/today', habitController.getTodayHabits);
 router.post('/', habitController.createHabit);
 router.patch('/:habitId', habitController.updateHabit);
 router.delete('/:habitId', habitController.deleteHabit);
 router.patch('/:habitId/today', habitController.toggleTodayHabit);
-
-// 습관 API 보호
 router.get('/:studyId/today', verifyStudyAuth, habitController.getTodayHabits);
 router.patch('/:studyId/today/:habitId', verifyStudyAuth, habitController.toggleTodayHabit);
 
