@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import * as focusController from '../controllers/focus.controller.js';
+import { verifyStudyAuth } from "../middlewares/auth.middleware.js";
 
 const router = Router({ mergeParams: true });
 
@@ -93,6 +94,7 @@ const router = Router({ mergeParams: true });
  *         description: 서버 에러
  */
 
+router.use(verifyStudyAuth);
 router.post('/', focusController.focusSuccess);
 
 export default router;

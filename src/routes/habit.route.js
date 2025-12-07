@@ -367,6 +367,8 @@ const router = Router({ mergeParams: true });
  *         description: 서버 에러
  */
 
+router.use(verifyStudyAuth);
+
 router.get('/', habitController.getHabits);
 router.get('/today', habitController.getTodayHabits);
 router.post('/', habitController.createHabit);
